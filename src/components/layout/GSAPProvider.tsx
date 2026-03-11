@@ -3,22 +3,28 @@
 import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+// Register plugins at module scope — runs once per client bundle
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+// Global animation defaults — "The Craftsman's Journal" motion language
+gsap.defaults({
+  ease: "power3.out",
+  duration: 0.8,
+});
 
 /**
- * Registers GSAP plugins once at the app root.
- * Must be a client component — wrap around children in RootLayout.
+ * Registers GSAP plugins and sets global defaults.
+ * Must wrap the entire app tree (inside layout.tsx) so ScrollTrigger
+ * is available to all components before they mount.
  */
 export function GSAPProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Register plugins on the client side only
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Match Lenis scroll events with ScrollTrigger
-    // (Lenis calls this in SmoothScroll.tsx — registered here as a no-op
-    //  so the plugin is ready when SmoothScroll mounts)
+    // Refresh after hydration so ScrollTrigger recalculates element positions
+    ScrollTrigger.refresh();
 
     return () => {
-      // Kill all ScrollTrigger instances on unmount (useful for HMR in dev)
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);

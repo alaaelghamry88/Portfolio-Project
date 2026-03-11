@@ -1,25 +1,14 @@
+import { HeroSection } from "@/components/hero/HeroSection";
+
 /**
- * Home page — Phase 1 skeleton.
- * Content sections will be assembled here in Phases 2–4.
+ * Home page.
+ * Phase 2: HeroSection fully implemented.
+ * Phases 3–4: remaining sections assembled below.
  */
 export default function Home() {
   return (
     <>
-      {/* Phase 2: HeroSection */}
-      <section
-        id="hero"
-        className="min-h-svh flex items-center justify-center"
-        aria-label="Hero"
-      >
-        <div className="container-site text-center">
-          <h1 className="text-hero font-display text-foreground mb-6">
-            The Craftsman&apos;s Journal
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Phase 1 skeleton — design system active, dark theme live.
-          </p>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Phase 3: AboutSection */}
       <section id="about" className="py-24" aria-label="About" />
