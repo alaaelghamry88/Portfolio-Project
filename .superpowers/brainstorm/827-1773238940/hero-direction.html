@@ -1,0 +1,313 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .q { font-size: 0.8rem; color: #a89f90; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1.5rem; }
+
+  .directions { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .dir-card {
+    border: 1px solid #3a4555;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .dir-card.selected { border-color: #c8602a; }
+  .dir-card:hover { border-color: #6a7585; }
+
+  .dir-label {
+    padding: 10px 14px;
+    background: #2a3240;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #a89f90;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dir-label span { color: #c8602a; font-weight: 600; }
+
+  /* ── HERO MOCK ── */
+  .hero-mock {
+    height: 340px;
+    background: #1a1e24;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+  }
+
+  /* shared grain */
+  .hero-mock::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .left-col { flex: 1; position: relative; z-index: 2; }
+  .right-placeholder {
+    width: 44%;
+    height: 100%;
+    position: absolute;
+    right: 0; top: 0;
+    background: linear-gradient(to left, rgba(42,50,64,0.5) 0%, transparent 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .spline-hint {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,96,42,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(200,96,42,0.3);
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    position: relative;
+  }
+  .spline-hint::after {
+    content: '';
+    position: absolute; inset: 12px;
+    border-radius: 50%;
+    border: 1px dashed rgba(200,96,42,0.15);
+  }
+
+  /* ── DIRECTION A: The Journal ── */
+  .dir-a .hero-mock {
+    background: linear-gradient(135deg, #1a1e24 60%, #1e2530 100%);
+  }
+  .dir-a .eyebrow {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dir-a .eyebrow-line { flex: 0 0 28px; height: 1px; background: #c8602a; }
+  .dir-a .eyebrow-text {
+    font-family: monospace; font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #a89f90;
+  }
+  .dir-a .title {
+    font-size: 2.8rem; font-weight: 700; line-height: 1;
+    color: #f5f0e8; margin-bottom: 4px;
+    font-family: Georgia, serif;
+    letter-spacing: -0.03em;
+  }
+  .dir-a .title .accent { color: #c8602a; }
+  .dir-a .rule {
+    width: 48px; height: 2px;
+    background: linear-gradient(to right, #c8602a, transparent);
+    margin: 14px 0;
+  }
+  .dir-a .subtitle {
+    font-size: 0.72rem; color: #a89f90; line-height: 1.6;
+    max-width: 220px; margin-bottom: 18px;
+  }
+  .dir-a .ctas { display: flex; gap: 8px; }
+  .dir-a .cta-primary {
+    padding: 7px 16px; background: #c8602a; color: #f5f0e8;
+    border-radius: 100px; font-size: 0.65rem; letter-spacing: 0.05em;
+  }
+  .dir-a .cta-secondary {
+    padding: 7px 16px; border: 1px solid #3a4555; color: #a89f90;
+    border-radius: 100px; font-size: 0.65rem;
+  }
+  .dir-a .bottom-bar {
+    position: absolute; bottom: 12px; left: 28px; right: 28px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    z-index: 2;
+  }
+  .dir-a .issue-no {
+    font-family: monospace; font-size: 0.55rem;
+    color: #3a4555; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .dir-a .scroll-indicator {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .dir-a .scroll-text {
+    font-family: monospace; font-size: 0.5rem;
+    letter-spacing: 0.2em; color: #3a4555; text-transform: uppercase;
+  }
+  .dir-a .scroll-track {
+    width: 1px; height: 24px; background: #3a4555; position: relative;
+  }
+  .dir-a .scroll-dot {
+    position: absolute; top: 0; left: 0; width: 100%; height: 8px;
+    background: #c8602a; border-radius: 100px;
+  }
+  /* edge vignette A */
+  .dir-a .vignette {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(26,30,36,0.5) 100%);
+  }
+  /* corner accent A */
+  .dir-a .corner-tl {
+    position: absolute; top: 14px; right: 28px; z-index: 2;
+  }
+  .dir-a .avail-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-family: monospace; font-size: 0.55rem; color: #a89f90;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .dir-a .avail-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: #2d6a4f;
+    box-shadow: 0 0 6px #2d6a4f;
+  }
+
+  /* ── DIRECTION B: Cinematic ── */
+  .dir-b .hero-mock {
+    background: #1a1e24;
+  }
+  /* heavier vignette corners */
+  .dir-b .vignette {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      radial-gradient(ellipse 100% 100% at 0% 0%, rgba(15,17,20,0.7) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 100% at 100% 100%, rgba(15,17,20,0.7) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 100% at 100% 0%, rgba(15,17,20,0.5) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 100% at 0% 100%, rgba(15,17,20,0.5) 0%, transparent 50%);
+  }
+  .dir-b .title-group { position: relative; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+  .dir-b .title-accent-bar {
+    flex: 0 0 3px; height: 72px; margin-top: 4px;
+    background: linear-gradient(to bottom, #c8602a, transparent);
+    border-radius: 2px;
+  }
+  .dir-b .title-inner {}
+  .dir-b .kicker {
+    font-family: monospace; font-size: 0.55rem; letter-spacing: 0.18em;
+    color: #c8602a; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .dir-b .title {
+    font-size: 2.8rem; font-weight: 700; line-height: 0.95;
+    color: #f5f0e8; font-family: Georgia, serif; letter-spacing: -0.03em;
+  }
+  .dir-b .title .accent { color: #c8602a; }
+  .dir-b .subtitle {
+    font-size: 0.7rem; color: #a89f90; line-height: 1.6;
+    max-width: 200px; margin-bottom: 18px;
+  }
+  .dir-b .ctas { display: flex; gap: 8px; }
+  .dir-b .cta-primary {
+    padding: 7px 16px; background: #c8602a; color: #f5f0e8;
+    border-radius: 2px; font-size: 0.65rem; letter-spacing: 0.05em;
+  }
+  .dir-b .cta-ghost {
+    padding: 7px 16px; border: 1px solid rgba(200,96,42,0.3);
+    color: #c8602a; border-radius: 2px; font-size: 0.65rem;
+  }
+  .dir-b .bottom-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    border-top: 1px solid #2a3240;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    z-index: 2; padding: 8px 28px;
+  }
+  .dir-b .meta-left {
+    font-family: monospace; font-size: 0.52rem;
+    color: #3a4555; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .dir-b .meta-center {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .dir-b .meta-scroll {
+    font-family: monospace; font-size: 0.5rem;
+    letter-spacing: 0.2em; color: #3a4555; text-transform: uppercase;
+  }
+  .dir-b .meta-track { width: 1px; height: 18px; background: #2a3240; position: relative; overflow: hidden; }
+  .dir-b .meta-fill { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: #c8602a; }
+  .dir-b .meta-right {
+    font-family: monospace; font-size: 0.52rem;
+    color: #3a4555; letter-spacing: 0.08em; text-align: right;
+    display: flex; align-items: center; justify-content: flex-end; gap: 5px;
+  }
+  .dir-b .avail-dot { width: 5px; height: 5px; border-radius: 50%; background: #2d6a4f; box-shadow: 0 0 5px #2d6a4f; }
+  .dir-b .top-rule {
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(200,96,42,0.3) 30%, rgba(200,96,42,0.3) 70%, transparent);
+    z-index: 2;
+  }
+  /* coordinates top-right */
+  .dir-b .coords {
+    position: absolute; top: 14px; right: 28px; z-index: 2;
+    font-family: monospace; font-size: 0.52rem; color: #3a4555;
+    letter-spacing: 0.08em;
+  }
+</style>
+
+<h2>Hero visual direction</h2>
+<p class="q">Two takes on adding richness — same elements, different editorial voice. Click to select.</p>
+
+<div class="directions">
+
+  <!-- DIRECTION A -->
+  <div class="dir-card dir-a option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="dir-label">A &nbsp;—&nbsp; <span>The Journal</span> &nbsp;·&nbsp; warm editorial, ruled, typographic</div>
+    <div class="hero-mock">
+      <div class="vignette"></div>
+      <div class="corner-tl">
+        <div class="avail-badge"><div class="avail-dot"></div> Available</div>
+      </div>
+      <div class="left-col">
+        <div class="eyebrow">
+          <div class="eyebrow-line"></div>
+          <div class="eyebrow-text">Frontend Developer · 2024</div>
+        </div>
+        <div class="title">The Craftsman's<br><span class="accent">Journal</span></div>
+        <div class="rule"></div>
+        <div class="subtitle">Crafting bold, expressive digital experiences with React, Next.js &amp; motion design.</div>
+        <div class="ctas">
+          <div class="cta-primary">View Work</div>
+          <div class="cta-secondary">About</div>
+        </div>
+      </div>
+      <div class="right-placeholder">
+        <div class="spline-hint">3D Scene</div>
+      </div>
+      <div class="bottom-bar">
+        <div class="issue-no">Vol. I &nbsp;·&nbsp; The Arrival</div>
+        <div class="scroll-indicator">
+          <div class="scroll-text">Scroll</div>
+          <div class="scroll-track"><div class="scroll-dot"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTION B -->
+  <div class="dir-card dir-b option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="dir-label">B &nbsp;—&nbsp; <span>Cinematic</span> &nbsp;·&nbsp; dramatic, corner vignettes, data bar</div>
+    <div class="hero-mock">
+      <div class="top-rule"></div>
+      <div class="vignette"></div>
+      <div class="coords">48.8566° N · 2.3522° E</div>
+      <div class="left-col">
+        <div class="title-group">
+          <div class="title-accent-bar"></div>
+          <div class="title-inner">
+            <div class="kicker">01 · The Arrival</div>
+            <div class="title">The Craftsman's<br><span class="accent">Journal</span></div>
+          </div>
+        </div>
+        <div class="subtitle">Crafting bold, expressive digital experiences with React, Next.js &amp; motion design.</div>
+        <div class="ctas">
+          <div class="cta-primary">View Work</div>
+          <div class="cta-ghost">About</div>
+        </div>
+      </div>
+      <div class="right-placeholder">
+        <div class="spline-hint">3D Scene</div>
+      </div>
+      <div class="bottom-bar">
+        <div class="meta-left">Frontend Dev · React · Next.js</div>
+        <div class="meta-center">
+          <div class="meta-scroll">Scroll</div>
+          <div class="meta-track"><div class="meta-fill"></div></div>
+        </div>
+        <div class="meta-right"><div class="avail-dot"></div> Available for work</div>
+      </div>
+    </div>
+  </div>
+
+</div>
