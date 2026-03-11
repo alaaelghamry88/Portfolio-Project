@@ -89,22 +89,16 @@ export function HeroText({ onEntranceComplete }: Props) {
   );
 
   return (
-    <div
-      ref={containerRef}
-      className="relative z-20 flex flex-col items-center justify-center h-full text-center px-6"
-    >
+    <div ref={containerRef} className="flex flex-col items-start gap-6">
       {/* ── Title ──────────────────────────────────────────────────── */}
       <h1
         ref={titleRef}
         className={cn(
-          "text-hero font-display text-paper leading-none mb-6",
+          "text-section font-display text-paper leading-tight",
           "will-change-transform",
         )}
         aria-label="The Craftsman's Journal"
       >
-        {/* Word "Craftsman's" is highlighted in terracotta via CSS after split.
-            The char spans get the parent colour; we override the highlight
-            via a sibling component or post-animation class. */}
         The Craftsman&apos;s{" "}
         <span className="text-terracotta">Journal</span>
       </h1>
@@ -112,7 +106,7 @@ export function HeroText({ onEntranceComplete }: Props) {
       {/* ── Subtitle ───────────────────────────────────────────────── */}
       <p
         ref={subtitleRef}
-        className="font-body text-lg md:text-xl text-paper-muted max-w-md leading-relaxed mb-10 opacity-0"
+        className="font-body text-base md:text-lg text-paper-muted max-w-sm leading-relaxed"
         style={{ opacity: 0 }}
       >
         Frontend developer crafting bold, expressive digital experiences
@@ -120,11 +114,11 @@ export function HeroText({ onEntranceComplete }: Props) {
       </p>
 
       {/* ── CTA ────────────────────────────────────────────────────── */}
-      <div ref={ctaRef} className="flex gap-4 opacity-0" style={{ opacity: 0 }}>
+      <div ref={ctaRef} className="flex gap-3" style={{ opacity: 0 }}>
         <a
           href="#projects"
           className={cn(
-            "inline-flex items-center gap-2 px-7 py-3.5",
+            "inline-flex items-center gap-2 px-6 py-3",
             "bg-terracotta text-paper font-body font-medium text-sm",
             "rounded-full transition-colors duration-200",
             "hover:bg-terracotta-light",
@@ -136,7 +130,7 @@ export function HeroText({ onEntranceComplete }: Props) {
         <a
           href="#about"
           className={cn(
-            "inline-flex items-center gap-2 px-7 py-3.5",
+            "inline-flex items-center gap-2 px-6 py-3",
             "border border-steel-border text-paper-muted font-body font-medium text-sm",
             "rounded-full transition-colors duration-200",
             "hover:border-terracotta hover:text-paper",
