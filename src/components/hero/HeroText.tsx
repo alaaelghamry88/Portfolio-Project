@@ -15,50 +15,63 @@ interface Props {
  * Hero foreground typography layer.
  *
  * - Title: "Clash Display", massive, char-by-char GSAP entrance
- * - One word highlighted in terracotta (#c8602a)
+ * - "Portfolio" highlighted in terracotta (#c8602a) on its own line
  * - Subtitle: fades up after title
  * - CTA link: appears last
  *
- * Entrance timeline (from HeroSection):
- *   0.5s delay before chars animate, stagger 0.035s per char, power4.out
+ * Each title line is a `.title-line` span so GSAP splits them
+ * individually without destroying the terracotta color on "Portfolio".
  */
 export function HeroText({ onEntranceComplete }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const kickerRef   = useRef<HTMLParagraphElement>(null);
+  const titleRef    = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
+  const ctaRef      = useRef<HTMLDivElement>(null);
 
   const prefersReduced = usePrefersReducedMotion();
 
   useGSAP(
     () => {
-      const title = titleRef.current;
+      const kicker   = kickerRef.current;
+      const title    = titleRef.current;
       const subtitle = subtitleRef.current;
-      const cta = ctaRef.current;
-      if (!title || !subtitle || !cta) return;
+      const cta      = ctaRef.current;
+      if (!kicker || !title || !subtitle || !cta) return;
 
       if (prefersReduced) {
-        // No animation — just show everything
-        gsap.set([subtitle, cta], { opacity: 1 });
+        gsap.set([kicker, subtitle, cta], { opacity: 1 });
         return;
       }
 
-      /* ── Split title into per-character spans ───────────────────── */
-      const rawText = title.textContent ?? "";
-      title.innerHTML = rawText
-        .split("")
-        .map(
-          (ch) =>
-            `<span class="char-wrap" style="display:inline-block;overflow:hidden;vertical-align:top">` +
-            `<span class="char" style="display:inline-block">${ch === " " ? "&nbsp;" : ch}</span>` +
-            `</span>`,
-        )
-        .join("");
+      /* ── Split each title line into per-character spans ─────────── */
+      const lines = title.querySelectorAll<HTMLElement>(".title-line");
+      lines.forEach((line) => {
+        const text = line.textContent ?? "";
+        // Preserve the original class (e.g. text-terracotta) on the wrapper
+        line.innerHTML = text
+          .split("")
+          .map(
+            (ch) =>
+              `<span class="char-wrap" style="display:inline-block;overflow:hidden;vertical-align:top">` +
+              `<span class="char" style="display:inline-block">${ch === " " ? "&nbsp;" : ch}</span>` +
+              `</span>`,
+          )
+          .join("");
+      });
 
       const chars = title.querySelectorAll<HTMLElement>(".char");
 
       /* ── Master entrance timeline ───────────────────────────────── */
       const tl = gsap.timeline({ delay: 0.5 });
+
+      // 0. Kicker fades in just ahead of title chars
+      tl.from(kicker, {
+        y: 8,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power3.out",
+      });
 
       // 1. Characters slide up from below their container (masked)
       tl.from(chars, {
@@ -89,32 +102,60 @@ export function HeroText({ onEntranceComplete }: Props) {
   );
 
   return (
-    <div ref={containerRef} className="flex flex-col items-start gap-6">
-      {/* ── Title ──────────────────────────────────────────────────── */}
-      <h1
-        ref={titleRef}
-        className={cn(
-          "text-section font-display text-paper leading-tight",
-          "will-change-transform",
-        )}
-        aria-label="The Craftsman's Journal"
-      >
-        The Craftsman&apos;s{" "}
-        <span className="text-terracotta">Journal</span>
-      </h1>
+    <div
+      ref={containerRef}
+      className="flex flex-col items-start md:gap-[50px] gap-[20px]"
+    >
+      {/* ── Accent bar + Kicker + Title ─────────────────────────────── */}
+      <div className="flex items-start gap-[20px]">
+        {/* Left accent bar — fixed height, offset down to align with kicker */}
+        <div
+          className="flex-none w-[3px] rounded-[2px] md:h-[150px] h-[80px] mt-[6px]"
+          style={{ background: "linear-gradient(to bottom, #c8602a, rgba(200,96,42,0.1))" }}
+          aria-hidden="true"
+        />
+
+        {/* Kicker + Title stacked */}
+        <div className="flex flex-col gap-2">
+          <p
+            ref={kickerRef}
+            className="font-mono text-[15px] tracking-[0.2em] text-terracotta text-orange-400 uppercase"
+          >
+            01 · The Arrival
+          </p>
+          <h1
+            ref={titleRef}
+            className={cn(
+              "text-section text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.5rem] font-serif font-bold text-white text-paper",
+              "leading-[0.92] tracking-[-0.03em] will-change-transform",
+            )}
+            aria-label="Alaa Elghamry's Portfolio"
+          >
+            {/* Mobile: single-line title to avoid awkward breaks */}
+            <span className="title-line block whitespace-nowrap md:hidden">
+              Alaa Elghamry&apos;s Portfolio
+            </span>
+            {/* Desktop+: two-line layout like the mock */}
+            <span className="title-line hidden md:block mb-2 md:mb-6">
+              Alaa Elghamry&apos;s
+            </span>
+            <span className="title-line hidden md:block text-terracotta text-orange-400">
+              Portfolio
+            </span>
+          </h1>
+        </div>
+      </div>
 
       {/* ── Subtitle ───────────────────────────────────────────────── */}
       <p
         ref={subtitleRef}
-        className="font-body text-base md:text-lg text-paper-muted max-w-sm leading-relaxed"
-        style={{ opacity: 0 }}
+        className="font-body text-md text-paper-muted text-slate-300 max-w-[500px] leading-relaxed"
       >
-        Frontend developer crafting bold, expressive digital experiences
-        with React, Next.js &amp; motion design.
+        Crafting bold, expressive digital experiences with React, Next.js &amp; motion design.
       </p>
 
       {/* ── CTA ────────────────────────────────────────────────────── */}
-      <div ref={ctaRef} className="flex gap-3" style={{ opacity: 0 }}>
+      <div ref={ctaRef} className="flex gap-3">
         <a
           href="#projects"
           className={cn(
@@ -131,9 +172,9 @@ export function HeroText({ onEntranceComplete }: Props) {
           href="#about"
           className={cn(
             "inline-flex items-center gap-2 px-6 py-3",
-            "border border-steel-border text-paper-muted font-body font-medium text-sm",
+            "border border-terracotta/40 text-terracotta font-body font-medium text-sm",
             "rounded-full transition-colors duration-200",
-            "hover:border-terracotta hover:text-paper",
+            "hover:border-terracotta hover:bg-terracotta/10",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-steel-deep",
           )}
         >

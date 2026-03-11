@@ -42,9 +42,9 @@ export function ScrollIndicator() {
       <span className="font-mono text-xs tracking-widest text-paper-muted uppercase">
         scroll
       </span>
-      {/* Animated track + dot */}
-      <div className="w-px h-10 bg-steel-border relative overflow-hidden rounded-full">
-        <div className="absolute top-0 left-0 w-full h-4 bg-terracotta rounded-full animate-[scrollDot_1.5s_ease-in-out_infinite_2.4s]" />
+      {/* Animated mouse outline + dot */}
+      <div className="h-10 w-5 rounded-full border border-steel-border flex items-start justify-center overflow-hidden">
+        <div className="w-[3px] h-[6px] bg-terracotta rounded-full animate-[scrollDot_1.5s_ease-in-out_infinite_2.4s]" />
       </div>
     </div>
   );

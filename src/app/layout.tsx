@@ -54,17 +54,18 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-
-        <ReduxProvider>
-          <GSAPProvider>
-            <SmoothScroll>
-              <Navbar />
-              <main id="main-content">{children}</main>
-              <Footer />
-              <Toaster />
-            </SmoothScroll>
-          </GSAPProvider>
-        </ReduxProvider>
+        <div className="site-bg">
+          <ReduxProvider>
+            <GSAPProvider>
+              <SmoothScroll>
+                <Navbar />
+                <main id="main-content">{children}</main>
+                <Footer />
+                <Toaster />
+              </SmoothScroll>
+            </GSAPProvider>
+          </ReduxProvider>
+        </div>
       </body>
     </html>
   );

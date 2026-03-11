@@ -14,7 +14,7 @@ const HeroCanvas = dynamic(() => import("./HeroCanvas").then((m) => m.HeroCanvas
 function ModelPlaceholder() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
-      <span className="block w-3 h-3 rounded-full bg-terracotta animate-pulse" />
+      <span className="block w-3 h-3 rounded-full animate-pulse" />
     </div>
   );
 }

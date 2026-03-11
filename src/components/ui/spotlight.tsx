@@ -23,8 +23,12 @@ export function Spotlight({
   const mouseX = useSpring(0, springOptions);
   const mouseY = useSpring(0, springOptions);
 
-  const spotlightLeft = useTransform(mouseX, (x) => `${x - size / 2}px`);
-  const spotlightTop  = useTransform(mouseY, (y) => `${y - size / 2}px`);
+  const innerSize = size * 0.4;
+
+  const spotlightLeft  = useTransform(mouseX, (x) => `${x - size / 2}px`);
+  const spotlightTop   = useTransform(mouseY, (y) => `${y - size / 2}px`);
+  const innerLeft      = useTransform(mouseX, (x) => `${x - innerSize / 2}px`);
+  const innerTop       = useTransform(mouseY, (y) => `${y - innerSize / 2}px`);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -64,21 +68,41 @@ export function Spotlight({
   }, [parentElement, handleMouseMove]);
 
   return (
-    <motion.div
-      ref={containerRef}
-      className={cn(
-        'pointer-events-none absolute rounded-full blur-xl transition-opacity duration-300',
-        'bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops),transparent_80%)]',
-        'from-terracotta/20 via-terracotta/10 to-transparent',
-        isHovered ? 'opacity-100' : 'opacity-0',
-        className,
-      )}
-      style={{
-        width: size,
-        height: size,
-        left: spotlightLeft,
-        top: spotlightTop,
-      }}
-    />
+    <>
+      {/* Outer wide halo — soft ambient glow */}
+      <motion.div
+        ref={containerRef}
+        className={cn(
+          'pointer-events-none absolute rounded-full transition-opacity duration-500',
+          isHovered ? 'opacity-100' : 'opacity-0',
+          className,
+        )}
+        style={{
+          width: size,
+          height: size,
+          left: spotlightLeft,
+          top: spotlightTop,
+          background:
+            'radial-gradient(circle at center, rgba(200,96,42,0.12) 0%, rgba(200,96,42,0.05) 45%, transparent 75%)',
+          filter: 'blur(40px)',
+        }}
+      />
+      {/* Inner focused beam — brighter core */}
+      <motion.div
+        className={cn(
+          'pointer-events-none absolute rounded-full transition-opacity duration-300',
+          isHovered ? 'opacity-100' : 'opacity-0',
+        )}
+        style={{
+          width: size * 0.4,
+          height: size * 0.4,
+          left: innerLeft,
+          top: innerTop,
+          background:
+            'radial-gradient(circle at center, rgba(232,137,90,0.22) 0%, rgba(200,96,42,0.10) 50%, transparent 80%)',
+          filter: 'blur(18px)',
+        }}
+      />
+    </>
   );
 }

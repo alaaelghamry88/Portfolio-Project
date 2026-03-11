@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense, lazy } from 'react'
+import type { Application } from '@splinetool/runtime'
 
 const Spline = lazy(() => import('@splinetool/react-spline'))
 
@@ -10,6 +11,11 @@ interface SplineSceneProps {
 }
 
 export function SplineScene({ scene, className }: SplineSceneProps) {
+  function handleLoad(spline: Application) {
+    // Transparent so the WebGL shader background shows through
+    spline.setBackgroundColor('transparent')
+  }
+
   return (
     <Suspense
       fallback={
@@ -18,7 +24,12 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
         </div>
       }
     >
-      <Spline scene={scene} className={className} />
+      <Spline
+        scene={scene}
+        className={className}
+        renderOnDemand={false}
+        onLoad={handleLoad}
+      />
     </Suspense>
   )
 }
