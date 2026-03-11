@@ -27,7 +27,8 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
       <Spline
         scene={scene}
         className={className}
-        renderOnDemand={false}
+        // Let Spline render on demand instead of every frame
+        renderOnDemand
         onLoad={handleLoad}
       />
     </Suspense>

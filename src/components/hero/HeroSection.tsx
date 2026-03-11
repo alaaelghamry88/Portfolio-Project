@@ -1,14 +1,34 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ShaderBackground } from "./ShaderBackground";
 import { HeroText } from "./HeroText";
 import { HeroDataBar } from "./HeroDataBar";
-import { SplineScene } from "@/components/ui/splite";
-import { Spotlight } from "@/components/ui/spotlight";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+
+const ShaderBackground = dynamic(
+  () => import("./ShaderBackground").then((m) => m.ShaderBackground),
+  {
+    ssr: false,
+    loading: () => <div className="absolute inset-0 bg-black" />,
+  },
+);
+
+const SplineScene = dynamic(
+  () => import("@/components/ui/splite").then((m) => m.SplineScene),
+  {
+    ssr: false,
+  },
+);
+
+const Spotlight = dynamic(
+  () => import("@/components/ui/spotlight").then((m) => m.Spotlight),
+  {
+    ssr: false,
+  },
+);
 
 /**
  * Hero section — "The Arrival".
@@ -23,8 +43,8 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
  *   z-[20] HeroDataBar — bottom status / scroll bar
  */
 export function HeroSection() {
-  const heroRef    = useRef<HTMLElement>(null);
-  const shaderRef  = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const shaderRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Written each frame by ScrollTrigger; read each frame by the WebGL loop
@@ -32,39 +52,71 @@ export function HeroSection() {
 
   const prefersReduced = usePrefersReducedMotion();
 
+  const [showSpline, setShowSpline] = useState(false);
+
+  // Defer heavy Spline mount until after first paint / intro
+  useEffect(() => {
+    if (prefersReduced) return;
+
+    const timeout = window.setTimeout(() => {
+      if ("requestIdleCallback" in window) {
+        (window as Window & { requestIdleCallback?: (cb: () => void) => void })
+          .requestIdleCallback?.(() => setShowSpline(true));
+      } else {
+        setShowSpline(true);
+      }
+    }, 600);
+
+    return () => window.clearTimeout(timeout);
+  }, [prefersReduced]);
+
   useGSAP(
     () => {
       if (prefersReduced) return;
 
-      // Shader fades in on load
-      gsap.from(shaderRef.current, {
-        opacity: 0,
-        duration: 1.4,
-        ease: "power2.out",
-      });
+      const shaderEl = shaderRef.current;
+      const contentEl = contentRef.current;
+      const heroEl = heroRef.current;
+
+      if (!shaderEl || !contentEl || !heroEl) return;
+
+      // Shader fades in on load (shorter + GPU hint)
+      gsap.fromTo(
+        shaderEl,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 1.0,
+          ease: "power2.out",
+        },
+      );
 
       // Content entrance — slight upward drift
-      gsap.from(contentRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 1.0,
-        ease: "power3.out",
-        delay: 0.2,
-      });
+      gsap.fromTo(
+        contentEl,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          delay: 0.1,
+        },
+      );
 
       // Parallax on scroll
       gsap.fromTo(
-        contentRef.current,
+        contentEl,
         { y: 0, opacity: 1 },
         {
-          y: "-10%",
-          opacity: 0.6,
+          y: "-8%",
+          opacity: 0.7,
           ease: "none",
           scrollTrigger: {
-            trigger: heroRef.current,
+            trigger: heroEl,
             start: "top top",
             end: "bottom top",
-            scrub: 1.2,
+            scrub: 1.1,
             onUpdate: (self) => {
               scrollProgressRef.current = self.progress;
             },
@@ -116,10 +168,12 @@ export function HeroSection() {
           <div
             className="absolute bottom-0 inset-x-0 h-24 z-10 pointer-events-none"
           />
-          <SplineScene
-            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-            className="w-full h-full"
-          />
+          {showSpline && (
+            <SplineScene
+              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+              className="w-full h-full"
+            />
+          )}
         </div>
       </div>
 
@@ -128,10 +182,12 @@ export function HeroSection() {
         <div
           className="w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] mr-[-40px] opacity-40"
         >
-          <SplineScene
-            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-            className="w-full h-full"
-          />
+          {showSpline && (
+            <SplineScene
+              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+              className="w-full h-full"
+            />
+          )}
         </div>
       </div>
 
