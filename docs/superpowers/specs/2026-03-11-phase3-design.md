@@ -192,37 +192,62 @@ Shared styles: `skewY(-6deg)`, `grayscale(100%)` default, grayscale removed on h
 
 **Location:** `src/components/skills/`
 
+### Concept
+
+Two concentric orbit rings — inspired by the OrbitingSkills component pattern — adapted to the brand palette. Inner ring rotates clockwise, outer ring counter-clockwise. Canvas pauses on hover. Skill bubbles counter-rotate so they always face upright.
+
 ### Layout
 
-- SectionHeading centered at top
-- Category filter tabs below heading
-- Responsive card grid below tabs
+- Desktop: two-column grid — left 45% (section heading + description + ring legend), right 55% (orbit canvas)
+- Mobile: single column — heading first, orbits shrink to fit viewport; below 480px orbits pause and render as a static grid of skill badges instead
+
+### Orbit Rings
+
+**Inner ring** (radius ~110px, clockwise, 18s per rotation):
+- Skills: React, Next.js, TypeScript, Tailwind CSS, HTML/CSS
+- Ring color: terracotta `#c8602a` — `border: 1px solid #c8602a55`, `box-shadow: 0 0 30px #c8602a22`
+
+**Outer ring** (radius ~190px, counter-clockwise, 28s per rotation):
+- Skills: GSAP, Framer Motion, Three.js/R3F, Node.js, Figma, Git/Vercel
+- Ring color: light terracotta `#e8895a` — `border: 1px solid #e8895a44`, `box-shadow: 0 0 40px #e8895a11`
+
+### Center Orb
+
+- 72px circle, `background: linear-gradient(135deg, #2a3240, #1a1e24)`, `border: 1.5px solid #3a4555`
+- "AE" monogram in Clash Display, terracotta
+- Two pulsing rings (`border: 1px solid #c8602a33`, `animation: pulse 2.5s ease-in-out infinite`) at -8px and -16px inset
 
 ### Components
 
-**`SkillCard.tsx`**
+**`SkillBubble.tsx`**
 
-Props: `skill: Skill`
+Props: `skill: Skill`, `size: number`
 
-- Icon: lucide-react icon if available, else first 2 letters of name as mono text
-- Name: `font-body`, medium weight
-- Category badge: color-coded
-  - `frontend` → green
-  - `animation` → blue
-  - `backend` → amber
-  - `tools` → slate
-  - `design` → purple
-- Hover: `y: -4px`, border → terracotta, subtle terracotta glow shadow
-- Transition: `0.2s ease`
+- Circle div: `background: #2a3240`, `border: 1.5px solid #3a4555`
+- Content: SVG tech icon if available, else 2–3 letter mono abbreviation + tiny label below
+- Hover: `scale(1.2)`, `border-color: #c8602a`, `box-shadow: 0 0 20px #c8602a44`, tooltip below with full skill name
+- Counter-rotates at the same speed as parent orbit so it stays upright
+
+**`OrbitRing.tsx`**
+
+Props: `radius: number`, `color: "inner" | "outer"`, `skills: Skill[]`, `speed: number`, `direction: "cw" | "ccw"`
+
+- Renders the ring path (CSS circle) + evenly distributes `SkillBubble` children around the circumference via `angle = (index / total) * 2π`
+- `useEffect` + `requestAnimationFrame` drives rotation angle in state; paused via a ref flag set by the parent canvas hover handler
+- On unmount: cancels animation frame
 
 **`SkillsSection.tsx`**
 
 - `<section id="skills">`
-- Category tabs: JetBrains Mono, terracotta underline on active tab
-- Active tab stored in local `useState` (not Redux — ephemeral UI state)
-- Tab switch animation: GSAP — old cards `opacity → 0, y → -8` out, new cards stagger in `y: 0, opacity: 1`, `0.04s` stagger
-- Initial entrance: `ScrollTrigger.batch()` — cards wave-stagger in (row by row, not linear)
-- Mobile: tabs become horizontally scrollable strip (`overflow-x: auto`, no scrollbar)
+- Left column: `SectionHeading kicker="04 · The Practice" title="The Tools of the Craft"` + description paragraph + ring legend (two colored lines labelling inner/outer ring contents)
+- Right column: orbit canvas (`position: relative`, fixed size 440×440px on desktop, scales via `transform: scale()` on smaller viewports)
+- Canvas `onMouseEnter` / `onMouseLeave` toggles a `isPaused` ref passed to both `OrbitRing` instances
+- ScrollTrigger entrance: entire section `opacity: 0 → 1`, canvas `scale: 0.85 → 1`, `power3.out`, triggered at `top 75%`
+- `prefers-reduced-motion`: skip rotation entirely — render skills as static positioned dots on the rings
+
+### Icon Strategy
+
+SVG icons for common techs (React, Next.js, TypeScript, Tailwind, Node.js, Three.js, Figma, Git) stored as inline SVG components in `src/components/skills/icons/`. For skills without an icon, render a 2–3 letter mono abbreviation (e.g. "GS" for GSAP, "FM" for Framer Motion) in terracotta on steel background.
 
 ---
 
@@ -335,8 +360,9 @@ CONTACT_EMAIL=your@email.com
 | About text | ScrollTrigger batch | Line-by-line `y: 30 → 0`, `0.06s` stagger |
 | Projects fan-out | ScrollTrigger scrub `1.2` | Cards peel from stack sequentially |
 | Project card hover | Mouse enter/leave | `y: -12`, grayscale off, border terracotta |
-| Skills entrance | ScrollTrigger batch | Wave stagger across grid rows |
-| Skills tab switch | Click | Old cards out `y: -8`, new cards in stagger |
+| Skills entrance | ScrollTrigger `top 75%` | Section `opacity: 0 → 1`, canvas `scale: 0.85 → 1` |
+| Skills orbit | `requestAnimationFrame` | Inner CW 18s, outer CCW 28s; pauses on canvas hover |
+| Skills hover | Mouse enter bubble | `scale(1.2)`, terracotta border + glow, tooltip in |
 | Contact form success | Submit | Form `y: -20, opacity: 0`, success text in |
 | SectionHeading | ScrollTrigger `top 80%` | Kicker fade up, title char-split |
 
@@ -366,7 +392,9 @@ src/components/projects/
 
 src/components/skills/
   SkillsSection.tsx
-  SkillCard.tsx
+  OrbitRing.tsx
+  SkillBubble.tsx
+  icons/                      (inline SVG icon components per tech)
 
 src/components/contact/
   ContactSection.tsx
