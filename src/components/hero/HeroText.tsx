@@ -127,7 +127,7 @@ export function HeroText({ onEntranceComplete }: Props) {
             ref={titleRef}
             className={cn(
               "text-section text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.5rem] font-serif font-bold text-white text-paper",
-              "leading-[0.92] tracking-[-0.03em] will-change-transform",
+              "leading-[1.2] tracking-[-0.03em] will-change-transform",
             )}
             aria-label="Alaa Elghamry's Portfolio"
           >
@@ -136,10 +136,10 @@ export function HeroText({ onEntranceComplete }: Props) {
               Alaa Elghamry&apos;s Portfolio
             </span>
             {/* Desktop+: two-line layout like the mock */}
-            <span className="title-line hidden md:block mb-2 md:mb-6">
+            <span className="title-line hidden md:block mb-2 md:mb-6 whitespace-nowrap">
               Alaa Elghamry&apos;s
             </span>
-            <span className="title-line hidden md:block text-terracotta text-orange-400">
+            <span className="title-line hidden md:block text-terracotta text-orange-400 whitespace-nowrap">
               Portfolio
             </span>
           </h1>
