@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx shadcn@latest add card badge dialog input textarea toast --yes)",
+      "Bash(npx shadcn@latest add card badge dialog input textarea sonner --yes)",
+      "Bash(npm install --save-dev @types/three)"
+    ]
+  }
+}
