@@ -119,14 +119,15 @@ export function HeroText({ onEntranceComplete }: Props) {
         <div className="flex flex-col gap-2">
           <p
             ref={kickerRef}
-            className="font-mono text-[15px] tracking-[0.2em] text-terracotta text-orange-400 uppercase"
+            className="font-mono text-[15px] tracking-[0.2em] text-terracotta uppercase"
           >
             01 · The Arrival
           </p>
           <h1
             ref={titleRef}
             className={cn(
-              "text-section text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.5rem] font-serif font-bold text-white text-paper",
+              "font-display font-bold text-paper",
+              "text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.5rem]",
               "leading-[1.2] tracking-[-0.03em] will-change-transform",
             )}
             aria-label="Alaa Elghamry's Portfolio"
@@ -139,7 +140,7 @@ export function HeroText({ onEntranceComplete }: Props) {
             <span className="title-line hidden md:block mb-2 md:mb-6 whitespace-nowrap">
               Alaa Elghamry&apos;s
             </span>
-            <span className="title-line hidden md:block text-terracotta text-orange-400 whitespace-nowrap">
+            <span className="title-line hidden md:block text-terracotta whitespace-nowrap">
               Portfolio
             </span>
           </h1>
@@ -149,7 +150,7 @@ export function HeroText({ onEntranceComplete }: Props) {
       {/* ── Subtitle ───────────────────────────────────────────────── */}
       <p
         ref={subtitleRef}
-        className="font-body text-md text-paper-muted text-slate-300 max-w-[500px] leading-relaxed"
+        className="font-body text-md text-paper-muted max-w-[500px] leading-relaxed"
       >
         Crafting bold, expressive digital experiences with React, Next.js &amp; motion design.
       </p>

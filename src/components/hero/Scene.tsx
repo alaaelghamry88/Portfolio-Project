@@ -18,6 +18,10 @@ function BreathingGeometry() {
   const groupRef = useRef<THREE.Group>(null);
   const { mouse } = useThree();
 
+  // Track base rotation separately so mouse tilt can be additive on top
+  const baseRotX = useRef(0);
+  const baseRotY = useRef(0);
+
   // Shared geometry for both solid mesh and edge lines
   const geo = useMemo(() => new THREE.IcosahedronGeometry(1.4, 1), []);
   const edgesGeo = useMemo(() => new THREE.EdgesGeometry(geo), [geo]);
@@ -74,13 +78,15 @@ function BreathingGeometry() {
       g.scale.setScalar(breathScale);
     }
 
-    // Slow base rotation
-    g.rotation.y += 0.0015;
-    g.rotation.x += 0.0005;
+    // Accumulate base rotation independently
+    baseRotX.current += 0.0005;
+    baseRotY.current += 0.0015;
 
-    // Mouse-reactive tilt (lerped for smooth follow)
-    g.rotation.x += (mouse.y * 0.25 - g.rotation.x) * 0.04;
-    g.rotation.y += (mouse.x * 0.25 - g.rotation.y) * 0.04;
+    // Mouse tilt is additive on top of base — lerped for smooth follow
+    const targetX = baseRotX.current + mouse.y * 0.25;
+    const targetY = baseRotY.current + mouse.x * 0.25;
+    g.rotation.x += (targetX - g.rotation.x) * 0.04;
+    g.rotation.y += (targetY - g.rotation.y) * 0.04;
   });
 
   return (

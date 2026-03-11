@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { HeroText } from "./HeroText";
 import { HeroDataBar } from "./HeroDataBar";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const ShaderBackground = dynamic(
   () => import("./ShaderBackground").then((m) => m.ShaderBackground),
@@ -51,6 +52,7 @@ export function HeroSection() {
   const scrollProgressRef = useRef(0);
 
   const prefersReduced = usePrefersReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const [showSpline, setShowSpline] = useState(false);
 
@@ -160,15 +162,7 @@ export function HeroSection() {
         <div
           className="hidden md:flex basis-[44%] h-full relative overflow-hidden"
         >
-          {/* Left-edge gradient: blends Spline into shader background */}
-          <div
-            className="absolute left-0 inset-y-0 w-48 z-10 pointer-events-none"
-          />
-          {/* Bottom-edge gradient for subtle grounding */}
-          <div
-            className="absolute bottom-0 inset-x-0 h-24 z-10 pointer-events-none"
-          />
-          {showSpline && (
+          {showSpline && isDesktop && (
             <SplineScene
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
               className="w-full h-full"
@@ -182,7 +176,7 @@ export function HeroSection() {
         <div
           className="w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] mr-[-40px] opacity-40"
         >
-          {showSpline && (
+          {showSpline && !isDesktop && (
             <SplineScene
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
               className="w-full h-full"

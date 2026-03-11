@@ -37,7 +37,8 @@ export function HeroDataBar() {
       aria-hidden="true"
     >
       {/* Left — stack */}
-      <span className="hidden md:block font-mono text-[11px] tracking-[0.1em] uppercase text-paper">
+      <span className="hidden md:block font-mono text-[11px] tracking-[0.1em] uppercase text-paper-muted">
+        Next.js · React · GSAP
       </span>
 
       {/* Center — scroll indicator */}
