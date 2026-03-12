@@ -72,29 +72,34 @@ export function CustomCursor() {
   // Dot and ring start invisible; shown only on pointer:fine devices
   return (
     <>
+      {/* Dot — white with exclusion blend: inverts whatever's beneath it */}
       <div
         ref={dotRef}
         aria-hidden="true"
         className="fixed top-0 left-0 z-[9999] pointer-events-none rounded-full"
         style={{
-          width: 6,
-          height: 6,
-          marginLeft: -3,
-          marginTop: -3,
-          background: "#c8602a",
+          width: 8,
+          height: 8,
+          marginLeft: -4,
+          marginTop: -4,
+          background: "#ffffff",
+          mixBlendMode: "exclusion",
           opacity: 0,
         }}
       />
+      {/* Ring — white border with exclusion blend + faint fill */}
       <div
         ref={ringRef}
         aria-hidden="true"
         className="fixed top-0 left-0 z-[9998] pointer-events-none rounded-full"
         style={{
-          width: 28,
-          height: 28,
-          marginLeft: -14,
-          marginTop: -14,
-          border: "1.5px solid rgba(200,96,42,0.5)",
+          width: 36,
+          height: 36,
+          marginLeft: -18,
+          marginTop: -18,
+          border: "1.5px solid rgba(255,255,255,0.75)",
+          background: "rgba(255,255,255,0.04)",
+          mixBlendMode: "exclusion",
           opacity: 0,
         }}
       />

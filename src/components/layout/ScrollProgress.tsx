@@ -27,8 +27,8 @@ export function ScrollProgress() {
   return (
     <div
       aria-hidden="true"
-      className="fixed top-0 left-0 right-0 z-[60] h-px pointer-events-none"
-      style={{ background: "rgba(200,96,42,0.15)" }}
+      className="fixed top-0 left-0 right-0 z-[60] pointer-events-none"
+      style={{ height: 3, background: "rgba(200,96,42,0.12)" }}
     >
       <div
         ref={barRef}

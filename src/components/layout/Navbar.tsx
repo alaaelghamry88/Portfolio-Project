@@ -23,6 +23,7 @@ interface NavItem {
   icon: React.ReactNode;
   gradient: string;
   iconColor: string;
+  activeColor: string;
 }
 
 const navItems: NavItem[] = [
@@ -33,6 +34,7 @@ const navItems: NavItem[] = [
     gradient:
       "radial-gradient(circle, rgba(251,191,36,0.22) 0%, rgba(251,191,36,0.06) 50%, rgba(251,191,36,0) 100%)",
     iconColor: "group-hover:text-amber-400",
+    activeColor: "text-amber-400",
   },
   {
     href: "#projects",
@@ -41,6 +43,7 @@ const navItems: NavItem[] = [
     gradient:
       "radial-gradient(circle, rgba(52,211,153,0.2) 0%, rgba(52,211,153,0.05) 50%, rgba(52,211,153,0) 100%)",
     iconColor: "group-hover:text-emerald-400",
+    activeColor: "text-emerald-400",
   },
   {
     href: "#skills",
@@ -49,6 +52,7 @@ const navItems: NavItem[] = [
     gradient:
       "radial-gradient(circle, rgba(125,211,252,0.18) 0%, rgba(125,211,252,0.05) 50%, rgba(125,211,252,0) 100%)",
     iconColor: "group-hover:text-sky-300",
+    activeColor: "text-sky-300",
   },
   {
     href: "#contact",
@@ -57,6 +61,7 @@ const navItems: NavItem[] = [
     gradient:
       "radial-gradient(circle, rgba(167,139,250,0.2) 0%, rgba(167,139,250,0.05) 50%, rgba(167,139,250,0) 100%)",
     iconColor: "group-hover:text-violet-400",
+    activeColor: "text-violet-400",
   },
 ];
 
@@ -123,7 +128,7 @@ function FlipItem({
         href={item.href}
         className={cn(
           "flex items-center gap-1.5 relative z-10 rounded-xl transition-colors",
-          isActive ? item.iconColor.replace("group-hover:", "") : "text-[#a89f90]",
+          isActive ? item.activeColor : "text-[#a89f90]",
           className,
         )}
         variants={itemVariants}

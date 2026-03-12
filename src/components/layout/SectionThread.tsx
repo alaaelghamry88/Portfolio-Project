@@ -38,14 +38,13 @@ export function SectionThread() {
     return () => trigger.kill();
   }, []);
 
-  // Node positions: distribute evenly across viewport height
-  // Each section node sits at (index / (total-1)) * 100%
+  // Node positions: distribute within 6%–94% so first/last nodes stay in viewport
   const nodeCount = SECTIONS.length;
 
   return (
     <div
       aria-hidden="true"
-      className="fixed left-6 top-0 h-screen z-30 pointer-events-none hidden md:flex flex-col items-center"
+      className="fixed left-6 top-0 h-screen z-30 pointer-events-none hidden md:block"
       style={{ width: 20 }}
     >
       {/* Base line — full height, faint */}
@@ -78,13 +77,13 @@ export function SectionThread() {
       {/* Section nodes */}
       {SECTIONS.map((section, i) => {
         const isActive = activeSection === section.id;
-        const pct = nodeCount > 1 ? (i / (nodeCount - 1)) * 100 : 50;
+        const pct = nodeCount > 1 ? 6 + (i / (nodeCount - 1)) * 88 : 50;
 
         return (
           <div
             key={section.id}
             className="absolute flex items-center justify-center"
-            style={{ top: `${pct}%`, transform: "translateY(-50%)" }}
+            style={{ top: `${pct}%`, left: "50%", transform: "translate(-50%, -50%)" }}
           >
             {/* Pulse ring — visible only on active */}
             {isActive && (
