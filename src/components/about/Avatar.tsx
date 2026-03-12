@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -50,24 +51,18 @@ export function Avatar() {
         </span>
       </div>
       {!imgError && (
-        <img
-          src="/images/avatar/avatar.jpg"
+        <Image
+          src="/images/avatar/Alaa-Elghamry.JPEG"
           alt="Alaa Elghamry"
+          width={400}
+          height={400}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
-            mixBlendMode: "luminosity",
             opacity: showImage ? 1 : 0,
             transition: "opacity 0.4s ease",
           }}
           onLoad={() => setImgLoaded(true)}
           onError={() => setImgError(true)}
-        />
-      )}
-      {!imgError && (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "#c8602a", mixBlendMode: "color" }}
-          aria-hidden="true"
         />
       )}
     </div>

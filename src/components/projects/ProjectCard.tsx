@@ -1,5 +1,6 @@
-"use client";
+ "use client";
 
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -58,10 +59,12 @@ function FeaturedCard({ project, className, style, "data-card": dataCard }: Prop
             className="w-full h-full object-cover"
           />
         ) : (
-          <img
+          <Image
             src={project.thumbnail}
             alt={project.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 960px, 100vw"
           />
         )}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -119,10 +122,12 @@ function StandardCard({ project, className, style, "data-card": dataCard }: Prop
       aria-label={`View project: ${project.title}`}
     >
       {project.thumbnail ? (
-        <img
+        <Image
           src={project.thumbnail}
           alt={project.title}
-          className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+          fill
+          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+          sizes="(min-width: 1024px) 320px, 100vw"
         />
       ) : (
         <div className="absolute inset-0 bg-steel" />

@@ -135,6 +135,7 @@ export function ProjectsSection() {
           animation:           tl,
           invalidateOnRefresh: true,
           anticipatePin:       1,
+          refreshPriority:     1,   // refresh before downstream sections so pin spacer is in place
           onToggle: (self) => {
             area.dataset.animating = self.isActive ? "true" : "";
           },

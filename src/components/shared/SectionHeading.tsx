@@ -48,12 +48,20 @@ export function SectionHeading({ kicker, title, className }: Props) {
       });
 
       const chars = titleEl.querySelectorAll<HTMLElement>(".char");
-      const trigger = { trigger: containerRef.current, start: "top 80%" };
+      const triggerConfig = { trigger: containerRef.current, start: "top 80%", invalidateOnRefresh: true as const };
+
+      // Reveal h2 wrapper only when ScrollTrigger fires (not on mount)
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top 80%",
+        invalidateOnRefresh: true,
+        onEnter: () => gsap.set(titleEl, { opacity: 1 }),
+      });
 
       gsap.fromTo(
         kickerEl,
         { y: 8, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", scrollTrigger: trigger },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", scrollTrigger: triggerConfig },
       );
 
       gsap.fromTo(
@@ -65,7 +73,7 @@ export function SectionHeading({ kicker, title, className }: Props) {
           duration: 0.75,
           ease: "power4.out",
           stagger: 0.03,
-          scrollTrigger: trigger,
+          scrollTrigger: triggerConfig,
         },
       );
     },
@@ -75,24 +83,33 @@ export function SectionHeading({ kicker, title, className }: Props) {
   const titleLines = title.split("\n");
 
   return (
-    <div ref={containerRef} className={cn("flex flex-col gap-3", className)}>
-      <p
-        ref={kickerRef}
-        className="font-mono text-xs tracking-[0.2em] text-terracotta uppercase opacity-0"
-      >
-        {kicker}
-      </p>
-      <h2
-        ref={titleRef}
-        className="font-display font-bold text-foreground text-4xl md:text-5xl leading-tight tracking-[-0.03em] opacity-0"
-        style={{ willChange: "transform" }}
-      >
-        {titleLines.map((line, i) => (
-          <span key={i} className="title-line block">
-            {line}
-          </span>
-        ))}
-      </h2>
+    <div ref={containerRef} className={cn("flex flex-row items-start gap-4", className)}>
+      {/* Terracotta accent bar — mirrors hero */}
+      <div
+        className="flex-none w-[3px] rounded-[2px] md:h-[150px] h-[80px] mt-[6px]"
+        style={{ background: "linear-gradient(to bottom, #c8602a, rgba(200,96,42,0.1))" }}
+        aria-hidden="true"
+      />
+
+      <div className="flex flex-col gap-3">
+        <p
+          ref={kickerRef}
+          className="font-mono text-xs tracking-[0.2em] text-terracotta uppercase opacity-0"
+        >
+          {kicker}
+        </p>
+        <h2
+          ref={titleRef}
+          className="font-display font-bold text-foreground text-4xl md:text-5xl leading-tight tracking-[-0.03em] opacity-0"
+          style={{ willChange: "transform" }}
+        >
+          {titleLines.map((line, i) => (
+            <span key={i} className="title-line block">
+              {line}
+            </span>
+          ))}
+        </h2>
+      </div>
     </div>
   );
 }

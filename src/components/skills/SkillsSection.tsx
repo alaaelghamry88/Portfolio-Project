@@ -50,7 +50,7 @@ export function SkillsSection() {
           opacity: 1,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 75%", invalidateOnRefresh: true },
         },
       );
 
@@ -61,7 +61,7 @@ export function SkillsSection() {
           scale: 1,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 75%", invalidateOnRefresh: true },
         },
       );
     },

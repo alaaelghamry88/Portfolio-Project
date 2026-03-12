@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { projects } from "@/data/projects";
@@ -50,10 +51,12 @@ export default async function ProjectPage({ params }: Props) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <img
+            <Image
               src={project.thumbnail}
               alt={project.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(min-width: 1024px) 960px, 100vw"
             />
           )}
         </div>
