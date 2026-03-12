@@ -1,38 +1,41 @@
 "use client";
 
-// Placeholder — full implementation in Phase 4
-// Will include: avatar easter egg, social links, travel coordinates
+import { SocialLinks } from "@/components/ui/social-links";
 
-import { NAV_LINKS } from "@/lib/constants";
-import Link from "next/link";
+const FOOTER_SOCIALS = [
+  {
+    name: "Github",
+    image: "https://cdn-icons-png.flaticon.com/512/25/25231.png",
+    href: "https://github.com/your-username",
+  },
+  {
+    name: "LinkedIn",
+    image: "https://cdn-icons-png.flaticon.com/512/174/174857.png",
+    href: "https://www.linkedin.com/in/your-handle",
+  },
+  {
+    name: "Gmail",
+    image: "https://cdn-icons-png.flaticon.com/512/5968/5968534.png",
+    href: "mailto:youremail@gmail.com",
+  },
+] as const satisfies { name: string; image: string; href: string }[];
 
 export function Footer() {
   return (
-    <footer className="border-t border-border py-6 mt-0">
-      <div className="container-site flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="mt-0 border-t border-border py-6">
+      <div className="container-site flex flex-col items-center justify-between gap-6 md:flex-row">
         {/* Left — name + tagline */}
         <div>
           <p className="font-display font-semibold text-foreground">
             Portfolio
           </p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground">
             Built with craft and care.
           </p>
         </div>
 
-        {/* Center — nav links */}
-        <ul className="flex items-center gap-6" role="list">
-          {NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {/* Center — social links */}
+        <SocialLinks socials={FOOTER_SOCIALS} className="gap-4" />
 
         {/* Right — copyright */}
         <p className="text-sm text-muted-foreground">

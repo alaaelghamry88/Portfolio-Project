@@ -157,7 +157,11 @@ export function HeroText({ onEntranceComplete }: Props) {
       </p>
 
       {/* ── CTA ────────────────────────────────────────────────────── */}
-      <div ref={ctaRef} className="flex gap-3">
+      <div
+        ref={ctaRef}
+        className="flex gap-3"
+        suppressHydrationWarning
+      >
         <a
           href="/Alaa-Elghamry-Mid-Senior-Resume.pdf"
           target="_blank"
