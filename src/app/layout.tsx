@@ -5,6 +5,9 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { NavbarWrapper } from "@/components/layout/NavbarWrapper";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
+import { CustomCursor } from "@/components/layout/CustomCursor";
+import { SectionThread } from "@/components/layout/SectionThread";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -50,6 +53,8 @@ export default function RootLayout({
      */
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="antialiased">
+        <ScrollProgress />
+        <CustomCursor />
         {/* Accessibility: skip to main content */}
         <a href="#main-content" className="skip-link">
           Skip to content
@@ -57,6 +62,7 @@ export default function RootLayout({
         <div className="site-bg">
           <ReduxProvider>
             <GSAPProvider>
+              <SectionThread />
               <SmoothScroll>
                 <NavbarWrapper />
                 <main id="main-content">{children}</main>
