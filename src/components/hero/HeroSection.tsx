@@ -8,6 +8,8 @@ import { HeroText } from "./HeroText";
 import { HeroDataBar } from "./HeroDataBar";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useAppDispatch } from "@/store/hooks";
+import { setActiveSection } from "@/store/slices/navigationSlice";
 
 const ShaderBackground = dynamic(
   () => import("./ShaderBackground").then((m) => m.ShaderBackground),
@@ -53,8 +55,21 @@ export function HeroSection() {
 
   const prefersReduced = usePrefersReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const dispatch = useAppDispatch();
 
   const [showSpline, setShowSpline] = useState(false);
+
+  // Dispatch "hero" active section so navbar clears when scrolling back to top
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) dispatch(setActiveSection("hero")); },
+      { threshold: 0.3 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [dispatch]);
 
   // Defer heavy Spline mount until after first paint / intro
   useEffect(() => {

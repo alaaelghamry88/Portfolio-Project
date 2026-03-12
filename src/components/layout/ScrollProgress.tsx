@@ -3,6 +3,9 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function ScrollProgress() {
   const barRef = useRef<HTMLDivElement>(null);
@@ -11,19 +14,18 @@ export function ScrollProgress() {
     const bar = barRef.current;
     if (!bar) return;
 
-    // Let GSAP own the transform from the start to avoid CSS/GSAP conflict
+    // GSAP owns the transform — avoids CSS/GSAP conflict
     gsap.set(bar, { scaleX: 0 });
     const setScale = gsap.quickTo(bar, "scaleX", { duration: 0.1, ease: "none" });
 
-    const onScroll = () => {
-      const scrolled = window.scrollY;
-      const total = document.body.scrollHeight - window.innerHeight;
-      const progress = total > 0 ? scrolled / total : 0;
-      setScale(progress);
-    };
+    // Use ScrollTrigger (Lenis-connected) instead of native scroll events
+    const trigger = ScrollTrigger.create({
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: (self) => setScale(self.progress),
+    });
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => trigger.kill();
   }, []);
 
   return (
