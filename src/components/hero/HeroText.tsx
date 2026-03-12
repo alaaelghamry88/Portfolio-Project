@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { Download } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { cn } from "@/lib/utils";
 
@@ -158,7 +159,9 @@ export function HeroText({ onEntranceComplete }: Props) {
       {/* ── CTA ────────────────────────────────────────────────────── */}
       <div ref={ctaRef} className="flex gap-3">
         <a
-          href="#projects"
+          href="/Alaa-Elghamry-Mid-Senior-Resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className={cn(
             "inline-flex items-center gap-2 px-6 py-3",
             "bg-terracotta text-paper font-body font-medium text-sm",
@@ -167,10 +170,11 @@ export function HeroText({ onEntranceComplete }: Props) {
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-steel-deep",
           )}
         >
-          View Work
+          My Resume
+          <Download className="h-4 w-4" />
         </a>
         <a
-          href="#about"
+          href="#contact"
           className={cn(
             "inline-flex items-center gap-2 px-6 py-3",
             "border border-terracotta/40 text-terracotta font-body font-medium text-sm",
@@ -179,7 +183,7 @@ export function HeroText({ onEntranceComplete }: Props) {
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-steel-deep",
           )}
         >
-          About
+          Contact Me
         </a>
       </div>
     </div>

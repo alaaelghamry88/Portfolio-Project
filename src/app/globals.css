@@ -140,6 +140,22 @@
   --color-terracotta-light: #e8895a;
   --color-terracotta-wash: #3d2a1f;
 
+  /* Named palette — Green */
+  --color-green: #2d6a4f;
+  --color-green-pale: #d8f3dc;
+
+  /* Named palette — Amber */
+  --color-amber: #b5850a;
+  --color-amber-pale: #fff3cd;
+
+  /* Named palette — Red */
+  --color-red: #9b2226;
+  --color-red-pale: #fde8e8;
+
+  /* Named palette — Blue */
+  --color-blue: #1a4a7a;
+  --color-blue-pale: #dbeafe;
+
   /* Named palette — Steel */
   --color-steel-deep: #1a1e24;
   --color-steel: #2a3240;

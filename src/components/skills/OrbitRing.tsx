@@ -28,10 +28,10 @@ export function OrbitRing({
   const lastTimeRef = useRef<number>(0);
   const bubblesRef  = useRef<(HTMLDivElement | null)[]>([]);
 
-  const ringColor = color === "inner" ? "#c8602a" : "#e8895a";
-  const borderAlpha = color === "inner" ? "55" : "44";
-  const glowAlpha   = color === "inner" ? "22" : "11";
-  const glowSize    = color === "inner" ? 30 : 40;
+  const ringColor   = color === "inner" ? "#c8602a" : "#60a5fa";
+  const borderAlpha = color === "inner" ? "55"     : "44";
+  const glowAlpha   = color === "inner" ? "22"     : "18";
+  const glowSize    = color === "inner" ? 30       : 40;
 
   const cx = canvasSize / 2;
   const cy = canvasSize / 2;
@@ -83,7 +83,7 @@ export function OrbitRing({
           className="absolute pointer-events-auto"
           style={{ top: 0, left: 0, transform: "translate(0px, 0px)" }}
         >
-          <SkillBubble skill={skill} size={BUBBLE_SIZE} />
+          <SkillBubble skill={skill} size={BUBBLE_SIZE} accentColor={ringColor} />
         </div>
       ))}
     </div>

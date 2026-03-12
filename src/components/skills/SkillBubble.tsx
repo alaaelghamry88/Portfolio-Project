@@ -12,6 +12,7 @@ export { BUBBLE_SIZE };
 interface Props {
   skill: Skill;
   size?: number;
+  accentColor?: string;
 }
 
 function abbr(name: string): string {
@@ -24,7 +25,7 @@ function abbr(name: string): string {
     .toUpperCase();
 }
 
-export function SkillBubble({ skill, size = BUBBLE_SIZE }: Props) {
+export function SkillBubble({ skill, size = BUBBLE_SIZE, accentColor = "#c8602a" }: Props) {
   const [hovered, setHovered] = useState(false);
   const Icon = SKILL_ICONS[skill.name];
 
@@ -44,15 +45,15 @@ export function SkillBubble({ skill, size = BUBBLE_SIZE }: Props) {
           width: size,
           height: size,
           background: "#2a3240",
-          border: hovered ? "1.5px solid #c8602a" : "1.5px solid #3a4555",
-          boxShadow: hovered ? "0 0 20px #c8602a44" : "none",
+          border: hovered ? `1.5px solid ${accentColor}` : "1.5px solid #3a4555",
+          boxShadow: hovered ? `0 0 20px ${accentColor}44` : "none",
           transform: hovered ? "scale(1.2)" : "scale(1)",
         }}
       >
         {Icon ? (
           <Icon size={Math.round(size * 0.45)} />
         ) : (
-          <span className="font-mono font-bold text-terracotta" style={{ fontSize: size * 0.28 }}>
+          <span className="font-mono font-bold" style={{ fontSize: size * 0.28, color: accentColor }}>
             {abbr(skill.name)}
           </span>
         )}

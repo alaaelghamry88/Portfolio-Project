@@ -33,7 +33,7 @@ export function ContactSection() {
       <div className="grid md:grid-cols-[9fr_11fr] gap-12 md:gap-20 items-start">
         <div className="flex flex-col gap-8">
           <SectionHeading
-            kicker="05 · The Next Step"
+            kicker="06 · The Next Step"
             title={"Let's Build\nSomething"}
           />
           <TextReveal className="flex flex-col gap-4">

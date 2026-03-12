@@ -79,7 +79,7 @@ export function SkillsSection() {
       <div className="grid md:grid-cols-[9fr_11fr] gap-12 md:gap-16 items-center">
         <div className="flex flex-col gap-8">
           <SectionHeading
-            kicker="04 · The Practice"
+            kicker="05 · The Practice"
             title={"The Tools\nof the Craft"}
           />
           <p className="font-body text-muted-foreground leading-relaxed max-w-sm">
@@ -93,7 +93,7 @@ export function SkillsSection() {
                 <span className="font-mono text-xs text-muted-foreground">Inner — Frontend core</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-px" style={{ background: "#e8895a" }} aria-hidden="true" />
+                <div className="w-8 h-px" style={{ background: "#60a5fa" }} aria-hidden="true" />
                 <span className="font-mono text-xs text-muted-foreground">Outer — Animation, tools & backend</span>
               </div>
             </div>
@@ -132,7 +132,7 @@ export function SkillsSection() {
                     className="absolute rounded-full pointer-events-none"
                     style={{
                       inset: -offset,
-                      border: "1px solid #c8602a33",
+                      border: "1px solid #c8602a44",
                       animation: "orb-pulse 2.5s ease-in-out infinite",
                       animationDelay: `${offset * 0.1}s`,
                     }}
@@ -149,8 +149,8 @@ export function SkillsSection() {
                 key={skill.name}
                 className="px-3 py-1.5 rounded-full border border-border font-mono text-xs text-foreground"
                 style={{
-                  borderColor: skill.orbit === "inner" ? "#c8602a55" : "#e8895a44",
-                  color: skill.orbit === "inner" ? "#c8602a" : "#e8895a",
+                  borderColor: skill.orbit === "inner" ? "#c8602a55" : "#60a5fa44",
+                  color: skill.orbit === "inner" ? "#c8602a" : "#60a5fa",
                 }}
               >
                 {skill.name}

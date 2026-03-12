@@ -168,7 +168,7 @@ export function ProjectsSection() {
       <div ref={pinnedRef} className="pt-24 md:pt-32 pb-16">
         {/* Heading row */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8 mb-6">
-          <SectionHeading kicker="03 · The Work" title={"Selected\nProjects"} />
+          <SectionHeading kicker="04 · The Work" title={"Selected\nProjects"} />
           <MagneticButton>
             <Link
               href="#contact"

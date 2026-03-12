@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Briefcase, User, Code2, Mail } from "lucide-react";
+import { Briefcase, FolderKanban, User, Code2, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
 
 // Map section IDs to nav item labels
 const SECTION_TO_NAV: Record<string, string> = {
-  about:    "About",
-  projects: "Work",
-  skills:   "Skills",
-  contact:  "Contact",
+  about:      "About",
+  experience: "Experience",
+  projects:   "Projects",
+  skills:     "Skills",
+  contact:    "Contact",
 };
 
 // ─── Nav items with per-item terracotta-variant radial glow ──────────────────
@@ -37,9 +37,18 @@ const navItems: NavItem[] = [
     activeColor: "text-amber-400",
   },
   {
-    href: "#projects",
-    label: "Work",
+    href: "#experience",
+    label: "Experience",
     icon: <Briefcase className="h-4 w-4" />,
+    gradient:
+      "radial-gradient(circle, rgba(251,146,60,0.2) 0%, rgba(251,146,60,0.05) 50%, rgba(251,146,60,0) 100%)",
+    iconColor: "group-hover:text-orange-400",
+    activeColor: "text-orange-400",
+  },
+  {
+    href: "#projects",
+    label: "Projects",
+    icon: <FolderKanban className="h-4 w-4" />,
     gradient:
       "radial-gradient(circle, rgba(52,211,153,0.2) 0%, rgba(52,211,153,0.05) 50%, rgba(52,211,153,0) 100%)",
     iconColor: "group-hover:text-emerald-400",
@@ -236,20 +245,6 @@ export function Navbar() {
             ))}
           </ul>
 
-          {/* CTA */}
-          <Link
-            href="#contact"
-            className={cn(
-              "ml-1 sm:ml-2 px-2.5 sm:px-4 py-1.5 rounded-xl text-sm font-body font-medium",
-              "bg-[#c8602a] text-[#f5f0e8]",
-              "hover:bg-[#e8895a] active:scale-95",
-              "transition-all duration-200",
-              "shadow-[0_2px_12px_rgba(200,96,42,0.35)]",
-            )}
-          >
-            <span className="hidden sm:inline">Hire Me</span>
-            <Mail className="sm:hidden h-4 w-4" />
-          </Link>
         </nav>
       </div>
 

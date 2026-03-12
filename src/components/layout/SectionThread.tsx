@@ -8,11 +8,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const SECTIONS = [
-  { id: "hero",     label: "01" },
-  { id: "about",    label: "02" },
-  { id: "projects", label: "03" },
-  { id: "skills",   label: "04" },
-  { id: "contact",  label: "05" },
+  { id: "hero",       label: "01" },
+  { id: "about",      label: "02" },
+  { id: "experience", label: "03" },
+  { id: "projects",   label: "04" },
+  { id: "skills",     label: "05" },
+  { id: "contact",    label: "06" },
 ] as const;
 
 type NodeData = { pct: number; threshold: number };

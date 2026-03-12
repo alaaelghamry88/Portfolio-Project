@@ -1,11 +1,28 @@
- "use client";
+"use client";
 
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import type { Project } from "@/types/project";
+import { tagColor } from "@/data/projects";
 import { cn } from "@/lib/utils";
+
+function TagPill({ tag }: { tag: string }) {
+  const color = tagColor(tag);
+  return (
+    <span
+      className="font-mono text-[0.6rem] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
+      style={{
+        color,
+        background: `${color}18`,
+        border: `1px solid ${color}40`,
+      }}
+    >
+      {tag}
+    </span>
+  );
+}
 
 interface Props {
   project: Project;
@@ -92,11 +109,9 @@ function FeaturedCard({ project, className, style, "data-card": dataCard }: Prop
           <p className="font-body text-sm text-muted-foreground line-clamp-2">{project.tagline}</p>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex flex-wrap gap-1">
-            {project.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-[10px]">
-                {tag}
-              </Badge>
+          <div className="flex flex-wrap gap-1.5">
+            {project.tags.slice(0, 4).map((tag) => (
+              <TagPill key={tag} tag={tag} />
             ))}
           </div>
           <span className="font-mono text-xs text-terracotta group-hover:underline">case study →</span>
@@ -144,7 +159,12 @@ function StandardCard({ project, className, style, "data-card": dataCard }: Prop
         style={{ background: "linear-gradient(to right, transparent, #1a1e2466)" }}
         aria-hidden="true"
       />
-      <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-1">
+      <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
+        <div className="flex flex-wrap gap-1.5">
+          {project.tags.slice(0, 3).map((tag) => (
+            <TagPill key={tag} tag={tag} />
+          ))}
+        </div>
         <span className="font-mono text-[10px] text-muted-foreground">{project.year}</span>
         <h3 className="font-display font-bold text-lg text-foreground">{project.title}</h3>
         <p className="font-body text-sm text-muted-foreground line-clamp-1">{project.tagline}</p>

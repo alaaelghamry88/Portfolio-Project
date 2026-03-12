@@ -10,19 +10,16 @@ export type Breakpoint = keyof typeof BREAKPOINTS;
 
 /** Section IDs used for IntersectionObserver & Redux navigation */
 export const SECTION_IDS = [
-  "hero",
-  "about",
-  "projects",
-  "skills",
-  "contact",
+  "hero", "about", "experience", "projects", "skills", "contact",
 ] as const;
 
 export type SectionId = (typeof SECTION_IDS)[number];
 
 /** Nav links */
 export const NAV_LINKS = [
-  { label: "Work", href: "#projects" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "About",      href: "#about"      },
+  { label: "Experience", href: "#experience" },
+  { label: "Projects",   href: "#projects"   },
+  { label: "Skills",     href: "#skills"     },
+  { label: "Contact",    href: "#contact"    },
 ] as const;

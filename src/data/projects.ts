@@ -1,5 +1,27 @@
 import type { Project } from "@/types/project";
 
+/** Maps tech tags to palette accent colors by category */
+const TAG_COLORS: Record<string, string> = {
+  // Frameworks — Terracotta
+  "React":          "#c8602a",
+  "Next.js":        "#c8602a",
+  // Language / Tooling — Blue
+  "TypeScript":     "#60a5fa",
+  "Storybook":      "#60a5fa",
+  "WebSockets":     "#60a5fa",
+  // Animation / Creative — Amber
+  "GSAP":           "#f0a500",
+  "Three.js":       "#f0a500",
+  "D3.js":          "#f0a500",
+  "Creative Coding":"#f0a500",
+  // Architecture / Systems — Green
+  "Design Systems": "#52b788",
+};
+
+export function tagColor(tag: string): string {
+  return TAG_COLORS[tag] ?? "#a89f90"; // muted fallback
+}
+
 export const projects: Project[] = [
   {
     slug: "luminary-ds",
