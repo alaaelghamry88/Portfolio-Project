@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ReduxProvider } from "@/store/provider";
 import { GSAPProvider } from "@/components/layout/GSAPProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { Navbar } from "@/components/layout/Navbar";
+import { NavbarWrapper } from "@/components/layout/NavbarWrapper";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -58,7 +58,7 @@ export default function RootLayout({
           <ReduxProvider>
             <GSAPProvider>
               <SmoothScroll>
-                <Navbar />
+                <NavbarWrapper />
                 <main id="main-content">{children}</main>
                 <Footer />
                 <Toaster />

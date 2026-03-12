@@ -23,15 +23,21 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     // Connect Lenis ticker to GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
-    // Drive Lenis with GSAP's ticker for frame-perfect sync
     const gsapTicker = (time: number) => lenis.raf(time * 1000);
-    // Import gsap dynamically to avoid SSR issues
     import("gsap").then(({ default: gsap }) => {
       gsap.ticker.add(gsapTicker);
       gsap.ticker.lagSmoothing(0);
     });
 
+    const t1 = setTimeout(() => ScrollTrigger.refresh(true), 150);
+    const t2 = setTimeout(() => ScrollTrigger.refresh(true), 600);
+    const onLoad = () => ScrollTrigger.refresh(true);
+    window.addEventListener("load", onLoad);
+
     return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener("load", onLoad);
       import("gsap").then(({ default: gsap }) => {
         gsap.ticker.remove(gsapTicker);
       });
