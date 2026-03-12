@@ -34,9 +34,11 @@ export function SectionThread() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (maxScroll <= 0) return;
 
+      // Trigger when the section is ~40% into the viewport, not when its top hits the top
+      const triggerOffset = window.innerHeight * 0.4;
       const thresholds = SECTIONS.map(({ id }) => {
         const el = document.getElementById(id);
-        return el ? el.offsetTop / maxScroll : null;
+        return el ? Math.max(0, el.offsetTop - triggerOffset) / maxScroll : null;
       });
 
       if (thresholds.every((t) => t !== null)) {
