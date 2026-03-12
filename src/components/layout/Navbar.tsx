@@ -2,9 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, Variants } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Briefcase, User, Code2, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/store/hooks";
+
+// Map section IDs to nav item labels
+const SECTION_TO_NAV: Record<string, string> = {
+  about:    "About",
+  projects: "Work",
+  skills:   "Skills",
+  contact:  "Contact",
+};
 
 // ─── Nav items with per-item terracotta-variant radial glow ──────────────────
 
@@ -86,10 +95,12 @@ const sharedTransition = {
 
 function FlipItem({
   item,
+  isActive,
   className,
   labelClassName,
 }: {
   item: NavItem;
+  isActive: boolean;
   className?: string;
   labelClassName?: string;
 }) {
@@ -111,8 +122,8 @@ function FlipItem({
       <motion.a
         href={item.href}
         className={cn(
-          "flex items-center gap-1.5 relative z-10 rounded-xl",
-          "text-[#a89f90] transition-colors",
+          "flex items-center gap-1.5 relative z-10 rounded-xl transition-colors",
+          isActive ? item.iconColor.replace("group-hover:", "") : "text-[#a89f90]",
           className,
         )}
         variants={itemVariants}
@@ -154,6 +165,8 @@ function FlipItem({
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const activeSection = useAppSelector((s) => s.navigation.activeSection);
+  const activeLabel   = SECTION_TO_NAV[activeSection] ?? null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -194,12 +207,26 @@ export function Navbar() {
           {/* Nav items */}
           <ul className="flex items-center gap-0.5" role="list">
             {navItems.map((item) => (
-              <li key={item.label}>
+              <li key={item.label} className="relative flex flex-col items-center">
                 <FlipItem
                   item={item}
+                  isActive={activeLabel === item.label}
                   className="px-2.5 py-1.5 text-sm sm:px-3"
                   labelClassName="hidden sm:inline font-body font-medium"
                 />
+                <AnimatePresence>
+                  {activeLabel === item.label && (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute -bottom-1 rounded-full bg-terracotta"
+                      style={{ width: 16, height: 2 }}
+                      initial={{ opacity: 0, scaleX: 0 }}
+                      animate={{ opacity: 1, scaleX: 1 }}
+                      exit={{ opacity: 0, scaleX: 0 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </AnimatePresence>
               </li>
             ))}
           </ul>
