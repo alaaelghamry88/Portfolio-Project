@@ -195,8 +195,8 @@ export function Navbar() {
           )}
           aria-label="Main navigation"
         >
-          {/* Logo mark */}
-          <Link
+          {/* Logo mark — plain <a> so Lenis intercepts the hash scroll */}
+          <a
             href="#hero"
             className="flex items-center gap-2 px-3 py-1.5 mr-1 rounded-xl group"
           >
@@ -207,7 +207,7 @@ export function Navbar() {
             <span className="hidden sm:inline font-mono text-[11px] text-[#a89f90] tracking-[0.12em] uppercase">
               Portfolio
             </span>
-          </Link>
+          </a>
 
           {/* Nav items */}
           <ul className="flex items-center gap-0.5" role="list">
