@@ -72,7 +72,7 @@ export function CustomCursor() {
   // Dot and ring start invisible; shown only on pointer:fine devices
   return (
     <>
-      {/* Dot — white with exclusion blend: inverts whatever's beneath it */}
+      {/* Dot — solid terracotta with glow */}
       <div
         ref={dotRef}
         aria-hidden="true"
@@ -82,24 +82,24 @@ export function CustomCursor() {
           height: 8,
           marginLeft: -4,
           marginTop: -4,
-          background: "#ffffff",
-          mixBlendMode: "exclusion",
+          background: "#c8602a",
+          boxShadow: "0 0 0 2px rgba(200,96,42,0.25), 0 0 14px rgba(200,96,42,0.75)",
           opacity: 0,
         }}
       />
-      {/* Ring — white border with exclusion blend + faint fill */}
+      {/* Ring — terracotta border with glow halo */}
       <div
         ref={ringRef}
         aria-hidden="true"
         className="fixed top-0 left-0 z-[9998] pointer-events-none rounded-full"
         style={{
-          width: 36,
-          height: 36,
-          marginLeft: -18,
-          marginTop: -18,
-          border: "1.5px solid rgba(255,255,255,0.75)",
-          background: "rgba(255,255,255,0.04)",
-          mixBlendMode: "exclusion",
+          width: 40,
+          height: 40,
+          marginLeft: -20,
+          marginTop: -20,
+          border: "1.5px solid rgba(200,96,42,0.7)",
+          background: "rgba(200,96,42,0.04)",
+          boxShadow: "0 0 12px rgba(200,96,42,0.2)",
           opacity: 0,
         }}
       />

@@ -11,6 +11,8 @@ export function ScrollProgress() {
     const bar = barRef.current;
     if (!bar) return;
 
+    // Let GSAP own the transform from the start to avoid CSS/GSAP conflict
+    gsap.set(bar, { scaleX: 0 });
     const setScale = gsap.quickTo(bar, "scaleX", { duration: 0.1, ease: "none" });
 
     const onScroll = () => {
@@ -36,7 +38,6 @@ export function ScrollProgress() {
         style={{
           width: "100%",
           transformOrigin: "left center",
-          transform: "scaleX(0)",
           background: "#c8602a",
           boxShadow: "0 0 8px rgba(200,96,42,0.6)",
         }}
