@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border py-12 mt-24">
+    <footer className="border-t border-border py-6 mt-0">
       <div className="container-site flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Left — name + tagline */}
         <div>

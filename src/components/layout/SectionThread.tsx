@@ -1,10 +1,9 @@
 // src/components/layout/SectionThread.tsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useAppSelector } from "@/store/hooks";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,10 +15,47 @@ const SECTIONS = [
   { id: "contact",  label: "05" },
 ] as const;
 
-export function SectionThread() {
-  const fillRef    = useRef<HTMLDivElement>(null);
-  const activeSection = useAppSelector((s) => s.navigation.activeSection);
+type NodeData = { pct: number; threshold: number };
 
+// Fallback: evenly distributed
+const FALLBACK: NodeData[] = SECTIONS.map((_, i) => {
+  const pct = SECTIONS.length > 1 ? 6 + (i / (SECTIONS.length - 1)) * 88 : 50;
+  return { pct, threshold: pct / 100 };
+});
+
+export function SectionThread() {
+  const fillRef = useRef<HTMLDivElement>(null);
+  const [nodes, setNodes]       = useState<NodeData[]>(FALLBACK);
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  // Calculate real thresholds from section DOM positions
+  useEffect(() => {
+    const recalc = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll <= 0) return;
+
+      const thresholds = SECTIONS.map(({ id }) => {
+        const el = document.getElementById(id);
+        return el ? el.offsetTop / maxScroll : null;
+      });
+
+      if (thresholds.every((t) => t !== null)) {
+        setNodes(
+          (thresholds as number[]).map((t) => ({
+            pct: Math.min(Math.max(t * 100, 2), 98),
+            threshold: t,
+          }))
+        );
+      }
+    };
+
+    // Wait for layout (fonts, images, dynamic content)
+    const t = setTimeout(recalc, 300);
+    window.addEventListener("resize", recalc);
+    return () => { clearTimeout(t); window.removeEventListener("resize", recalc); };
+  }, []);
+
+  // Scroll-driven fill + active index
   useEffect(() => {
     const fill = fillRef.current;
     if (!fill) return;
@@ -32,14 +68,17 @@ export function SectionThread() {
       scrub:   true,
       onUpdate: (self) => {
         setScale(self.progress);
+
+        let idx = 0;
+        for (let i = 0; i < nodes.length; i++) {
+          if (nodes[i].threshold <= self.progress + 0.01) idx = i;
+        }
+        setActiveIdx(idx);
       },
     });
 
     return () => trigger.kill();
-  }, []);
-
-  // Node positions: distribute within 6%–94% so first/last nodes stay in viewport
-  const nodeCount = SECTIONS.length;
+  }, [nodes]); // re-create trigger when nodes recalculate
 
   return (
     <div
@@ -47,9 +86,9 @@ export function SectionThread() {
       className="fixed left-6 top-0 h-screen z-30 pointer-events-none hidden md:block"
       style={{ width: 20 }}
     >
-      {/* Base line — full height, faint */}
+      {/* Base line */}
       <div
-        className="absolute inset-x-0 mx-auto"
+        className="absolute"
         style={{
           left: "50%",
           transform: "translateX(-50%)",
@@ -59,7 +98,7 @@ export function SectionThread() {
         }}
       />
 
-      {/* Filled portion — grows as page scrolls */}
+      {/* Filled portion */}
       <div
         ref={fillRef}
         className="absolute top-0"
@@ -75,9 +114,9 @@ export function SectionThread() {
       />
 
       {/* Section nodes */}
-      {SECTIONS.map((section, i) => {
-        const isActive = activeSection === section.id;
-        const pct = nodeCount > 1 ? 6 + (i / (nodeCount - 1)) * 88 : 50;
+      {nodes.map(({ pct }, i) => {
+        const isActive = activeIdx === i;
+        const section  = SECTIONS[i];
 
         return (
           <div
@@ -85,7 +124,6 @@ export function SectionThread() {
             className="absolute flex items-center justify-center"
             style={{ top: `${pct}%`, left: "50%", transform: "translate(-50%, -50%)" }}
           >
-            {/* Pulse ring — visible only on active */}
             {isActive && (
               <span
                 className="absolute rounded-full"
@@ -97,7 +135,6 @@ export function SectionThread() {
               />
             )}
 
-            {/* Node circle */}
             <div
               className="flex items-center justify-center rounded-full transition-all duration-400"
               style={{
@@ -109,7 +146,6 @@ export function SectionThread() {
               }}
             />
 
-            {/* Label — only when active */}
             {isActive && (
               <span
                 className="absolute font-mono text-[9px] text-terracotta"

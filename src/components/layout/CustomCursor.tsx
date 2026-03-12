@@ -4,105 +4,63 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
+const BLOB_SHAPES = [
+  "80% 20% 20% 80% / 80% 20% 80% 20%",
+  "20% 80% 80% 20% / 20% 80% 20% 80%",
+  "50% 50% 20% 80% / 80% 20% 50% 50%",
+  "20% 80% 50% 50% / 50% 50% 80% 20%",
+  "70% 30% 80% 20% / 20% 80% 30% 70%",
+];
+
 export function CustomCursor() {
-  const dotRef  = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+  const blobRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Don't show on touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
-    const dot  = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const blob = blobRef.current;
+    if (!blob) return;
 
-    // Make cursor elements visible
-    dot.style.opacity  = "1";
-    ring.style.opacity = "1";
-
-    // Hide native cursor on the whole page
+    blob.style.opacity = "1";
     document.documentElement.style.cursor = "none";
 
-    const moveX = gsap.quickTo(dot,  "x", { duration: 0,    ease: "none" });
-    const moveY = gsap.quickTo(dot,  "y", { duration: 0,    ease: "none" });
-    const lagX  = gsap.quickTo(ring, "x", { duration: 0.35, ease: "power2.out" });
-    const lagY  = gsap.quickTo(ring, "y", { duration: 0.35, ease: "power2.out" });
+    const moveX = gsap.quickTo(blob, "x", { duration: 0.25, ease: "power2.out" });
+    const moveY = gsap.quickTo(blob, "y", { duration: 0.25, ease: "power2.out" });
 
-    const onMove = (e: MouseEvent) => {
-      moveX(e.clientX);
-      moveY(e.clientY);
-      lagX(e.clientX);
-      lagY(e.clientY);
-    };
-
-    const onEnterInteractive = () => {
-      gsap.to(ring, { scale: 1.65, duration: 0.25, ease: "power2.out" });
-      gsap.to(dot,  { opacity: 0,  duration: 0.15 });
-    };
-    const onLeaveInteractive = () => {
-      gsap.to(ring, { scale: 1,   duration: 0.25, ease: "power2.out" });
-      gsap.to(dot,  { opacity: 1, duration: 0.15 });
-    };
-
+    const onMove = (e: MouseEvent) => { moveX(e.clientX); moveY(e.clientY); };
     window.addEventListener("mousemove", onMove);
 
-    // Watch for interactive elements entering/leaving
-    const observer = new MutationObserver(() => attachListeners());
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    function attachListeners() {
-      document
-        .querySelectorAll("a, button, [role='button'], input, textarea, select, label")
-        .forEach((el) => {
-          el.removeEventListener("mouseenter", onEnterInteractive);
-          el.removeEventListener("mouseleave", onLeaveInteractive);
-          el.addEventListener("mouseenter", onEnterInteractive);
-          el.addEventListener("mouseleave", onLeaveInteractive);
-        });
-    }
-    attachListeners();
+    // Organic morph loop
+    let i = 0;
+    const morph = () => {
+      i = (i + 1) % BLOB_SHAPES.length;
+      gsap.to(blob, { borderRadius: BLOB_SHAPES[i], duration: 1.0, ease: "sine.inOut", onComplete: morph });
+    };
+    morph();
 
     return () => {
       window.removeEventListener("mousemove", onMove);
-      observer.disconnect();
+      gsap.killTweensOf(blob);
       document.documentElement.style.cursor = "";
     };
   }, []);
 
-  // Dot and ring start invisible; shown only on pointer:fine devices
   return (
-    <>
-      {/* Dot — solid terracotta with glow */}
-      <div
-        ref={dotRef}
-        aria-hidden="true"
-        className="fixed top-0 left-0 z-[9999] pointer-events-none rounded-full"
-        style={{
-          width: 8,
-          height: 8,
-          marginLeft: -4,
-          marginTop: -4,
-          background: "#c8602a",
-          boxShadow: "0 0 0 2px rgba(200,96,42,0.25), 0 0 14px rgba(200,96,42,0.75)",
-          opacity: 0,
-        }}
-      />
-      {/* Ring — terracotta border with glow halo */}
-      <div
-        ref={ringRef}
-        aria-hidden="true"
-        className="fixed top-0 left-0 z-[9998] pointer-events-none rounded-full"
-        style={{
-          width: 40,
-          height: 40,
-          marginLeft: -20,
-          marginTop: -20,
-          border: "1.5px solid rgba(200,96,42,0.7)",
-          background: "rgba(200,96,42,0.04)",
-          boxShadow: "0 0 12px rgba(200,96,42,0.2)",
-          opacity: 0,
-        }}
-      />
-    </>
+    <div
+      ref={blobRef}
+      aria-hidden="true"
+      className="fixed top-0 left-0 z-[9999] pointer-events-none"
+      style={{
+        width: 24,
+        height: 24,
+        marginLeft: -12,
+        marginTop: -12,
+        background: "radial-gradient(circle at 40% 40%, #e8895a, #c8602a)",
+        opacity: 0,
+        filter: "blur(1.5px)",
+        boxShadow: "0 0 10px rgba(200,96,42,0.5)",
+        borderRadius: BLOB_SHAPES[0],
+      }}
+    />
   );
 }

@@ -27,7 +27,7 @@ export function ContactSection() {
     <section
       ref={sectionRef}
       id="contact"
-      className="container-site py-24 md:py-32"
+      className="container-site py-24 md:py-40"
       aria-label="Contact — The Next Step"
     >
       <div className="grid md:grid-cols-[9fr_11fr] gap-12 md:gap-20 items-start">
