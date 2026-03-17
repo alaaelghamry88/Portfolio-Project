@@ -68,7 +68,7 @@ Audit all image usages for missing `alt` text:
 - `Footer.tsx`
 
 ### `prefers-reduced-motion`
-The `usePrefersReducedMotion` hook exists. Audit that it is actually respected in:
+The `usePrefersReducedMotion` hook exists at `src/hooks/usePrefersReducedMotion.ts` (implemented in Phase 1). Audit that it is actually respected in:
 - `HeroText.tsx` (char-split GSAP entrance)
 - `ExperienceSection.tsx` (timeline draw)
 - `ProjectsSection.tsx` (horizontal scroll)
@@ -82,7 +82,7 @@ In `ContactForm.tsx`:
 
 ### Keyboard navigation
 - `MagneticButton.tsx` — confirm it wraps a `<button>` element (natively focusable), not a `<div>`
-- Navbar mobile overlay — trap focus while open, release on close (use `focus-trap` or manual `keydown` listener)
+- Navbar mobile overlay — trap focus while open, release on close. Use a manual `keydown` listener (no new dependency): listen for `Tab` and `Shift+Tab`, clamp focus to the first/last focusable element inside the overlay. Listen for `Escape` to close.
 - `ProjectCard` links — ensure keyboard-reachable in horizontal scroll layout
 
 ---
@@ -98,6 +98,15 @@ New file using Next.js built-in `ImageResponse` from `next/og`. Code-generated, 
 - **Background:** `#1a1e24` (Deep Steel)
 - **Content:** "Alaa Elghamry" in Clash Display (large), "Frontend Developer & Design Engineer" in Satoshi, terracotta (`#c8602a`) accent line divider
 - Referenced automatically by Next.js metadata system — no manual `og:image` entry needed in `layout.tsx`
+
+**Font loading:** `ImageResponse` requires fonts as `ArrayBuffer`. Fetch them inside the route handler:
+```ts
+const clashDisplay = await fetch(
+  'https://api.fontshare.com/v2/css?f[]=clash-display@700&display=swap'
+).then((r) => r.arrayBuffer());
+// pass to ImageResponse options: { fonts: [{ name: 'Clash Display', data: clashDisplay, weight: 700 }] }
+```
+For `icon.tsx` and `apple-icon.tsx`, use a system font — no custom font fetch needed for the "AE" monogram.
 
 ### Favicon + Icons
 New files in `src/app/`:
@@ -115,20 +124,28 @@ module.exports = {
   exclude: ['/api/*'],
 };
 ```
+Add a `.env.production` file with `SITE_URL=https://alaaelghamry.dev` as a placeholder (update before real deploy).
+
 Add `postbuild` script to `package.json`: `"postbuild": "next-sitemap"`.
-Generates `/sitemap.xml` and `/robots.txt` on every build.
+
+**Note:** `sitemap.xml` and `robots.txt` are only generated after `next build` (not `next dev`). This is expected — do not expect them to appear during local development.
 
 ### JSON-LD Person Schema
-Add inline `<script type="application/ld+json">` directly in `src/app/page.tsx` (not layout, so it only appears on the home page):
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Alaa Elghamry",
-  "jobTitle": "Frontend Developer & Design Engineer",
-  "url": "https://alaaelghamry.dev",
-  "sameAs": ["<github-url>", "<linkedin-url>"]
-}
+Add inline `<script type="application/ld+json">` directly in `src/app/page.tsx` (not layout, so it only appears on the home page). Pull social links from `src/data/personal.ts`:
+```tsx
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Alaa Elghamry',
+  jobTitle: 'Frontend Developer & Design Engineer',
+  url: 'https://alaaelghamry.dev',
+  sameAs: [
+    'https://github.com/alaaelghamry',   // update from personal.ts
+    'https://linkedin.com/in/alaaelghamry', // update from personal.ts
+  ],
+};
+// In JSX:
+// <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 ```
 
 ### Per-page metadata — `/projects/[slug]`
@@ -163,7 +180,7 @@ font-size: clamp(2.5rem, 8vw, 6rem);
 Applied via a CSS custom property or inline style. Ensures smooth scaling without breakpoint jumps. With the right column gone on mobile, text has full width to breathe.
 
 ### Projects section — mobile vertical stack
-In `ProjectsSection.tsx`, gate the GSAP `ScrollTrigger.pin` + horizontal scroll behind the existing `useMediaQuery` hook (only initialize on `md+`). On `< md`, render cards as a vertical stack with normal scroll.
+In `ProjectsSection.tsx`, gate the GSAP `ScrollTrigger.pin` + horizontal scroll behind the existing `useMediaQuery` hook at `src/hooks/useMediaQuery.ts` (implemented in Phase 1). Usage: `const isDesktop = useMediaQuery('(min-width: 768px)')`. Only initialize the ScrollTrigger when `isDesktop` is true. On `< md`, render cards as a vertical stack with normal scroll.
 
 ### Custom cursor on touch
 In `CustomCursor.tsx`, add a check on mount:
