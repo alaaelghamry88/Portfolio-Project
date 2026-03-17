@@ -16,55 +16,57 @@ export interface Experience {
 export const experiences: Experience[] = [
   {
     id: "exp-1",
-    company: "Acme Corp",
-    role: "Senior Frontend Developer",
-    startDate: "Jan 2023",
+    company: "Trianglz LLC",
+    role: "Mid-Senior Frontend Engineer",
+    startDate: "Jul 2024",
     endDate: null,
-    location: "Cairo",
+    location: "Alexandria, Egypt",
     remote: true,
-    color: "#52b788", // Green — active / growing
-    tags: ["Active", "SaaS", "Performance"],
+    color: "#c8602a", // Terracotta — active / current
+    tags: ["Active", "AI-Driven", "Design Systems", "Mentorship"],
     description:
-      "Led UI architecture for a SaaS dashboard serving 50k daily active users, owning the component system and performance strategy.",
+      "Leading frontend engineering at a product studio, driving AI-assisted development workflows, design system architecture, and performance optimization across multiple client products.",
     achievements: [
-      "Reduced bundle size by 40% via route-level code splitting and tree-shaking",
-      "Shipped real-time data visualisations with D3 + React, handling 1M+ data points",
-      "Mentored 3 junior engineers and established frontend code review standards",
+      "Pioneered the BMAD method to develop a Check-in/Check-out HR system, managing AI agents through the full dev lifecycle with rigorous code reviews",
+      "Achieved ~40% improvement in load times for the Mimar project by optimizing Core Web Vitals and implementing advanced React patterns",
+      "Designed and maintained a modular Design System and shared component libraries using Tailwind and Shadcn, improving cross-project efficiency",
+      "Authored a 3-month Frontend Internship curriculum — 50% of interns successfully integrated into the core team",
+      "Delivered technical talks on performance optimization and algorithms, fostering a culture of continuous learning",
     ],
   },
   {
     id: "exp-2",
-    company: "Studio Nova",
+    company: "eSpace",
     role: "Frontend Engineer",
-    startDate: "Mar 2021",
-    endDate: "Dec 2022",
-    location: "Berlin",
+    startDate: "Jun 2023",
+    endDate: "Jul 2024",
+    location: "Alexandria, Egypt",
     remote: false,
-    color: "#f0a500", // Amber — creative energy
-    tags: ["Agency", "Motion", "Creative Dev"],
+    color: "#60a5fa", // Blue — product / feature work
+    tags: ["Product", "SaaS", "React"],
     description:
-      "Built interactive marketing sites and digital campaigns for global brands, with a focus on motion design and creative development.",
+      "Developed and enhanced core frontend features for the Exceed product, building scalable React components and collaborating with backend and QA teams to ship high-quality releases.",
     achievements: [
-      "Delivered 12 client projects on time and under budget across 18 months",
-      "Pioneered a shared motion design system used across all agency projects",
-      "Introduced Storybook component documentation, cutting design-handoff time by 30%",
+      "Built reusable React components for notifications, leaderboards, subscriptions, surveys, and reporting dashboards",
+      "Collaborated with backend and QA teams to integrate APIs and ensure high-quality, clean modular releases",
+      "Applied frontend best practices to improve maintainability and support long-term scalability",
     ],
   },
   {
     id: "exp-3",
-    company: "TechStart",
-    role: "UI Developer",
-    startDate: "Jun 2019",
-    endDate: "Feb 2021",
-    location: "Cairo",
+    company: "Sayegh1944",
+    role: "Frontend Developer",
+    startDate: "Jan 2022",
+    endDate: "Mar 2023",
+    location: "Alexandria, Egypt",
     remote: false,
-    color: "#60a5fa", // Blue — foundational / technical
-    tags: ["Startup", "Fintech", "Design Systems"],
+    color: "#f0a500", // Amber — creative / interactive
+    tags: ["EdTech", "Interactive", "Games"],
     description:
-      "Designed and built a component library from scratch for a fintech product, working directly with the design and product teams.",
+      "Led the development of responsive, interactive, and educational games tailored for children of varying skill levels.",
     achievements: [
-      "Built 40+ reusable, accessible components documented in Storybook",
-      "Reduced design-to-development handoff time by 60%",
+      "Built engaging educational games enhancing learning outcomes across different age groups and skill levels",
+      "Delivered responsive, interactive UI experiences with a focus on child-friendly design and accessibility",
     ],
   },
 ];
