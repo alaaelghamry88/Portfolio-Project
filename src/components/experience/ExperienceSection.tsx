@@ -1,6 +1,7 @@
 // src/components/experience/ExperienceSection.tsx
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -75,17 +76,32 @@ export function ExperienceSection() {
       className="container-site py-24 md:py-32"
       aria-label="Experience — The Journey"
     >
-      <div className="max-w-3xl">
-        <SectionHeading
-          kicker="03 · The Journey"
-          title={"Where I've\nShipped."}
-        />
-
-        <div ref={rowsRef} className="mt-12 md:mt-16" data-exp-rows>
-          <ExperienceAccordion
-            experiences={experiences}
-            defaultOpenFirst={hasEntered}
+      <div className="grid gap-12 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] items-center">
+        <div className="max-w-3xl">
+          <SectionHeading
+            kicker="03 · The Journey"
+            title={"Where I've\nShipped."}
           />
+
+          <div ref={rowsRef} className="mt-12 md:mt-16" data-exp-rows>
+            <ExperienceAccordion
+              experiences={experiences}
+              defaultOpenFirst={hasEntered}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-center md:justify-end">
+          <div className="relative h-80 w-80 md:h-96 md:w-96 overflow-hidden rounded-3xl border border-slate-800/40 bg-slate-900 shadow-xl">
+            <Image
+              src="/images/avatar/Alaa-Avatar.png"
+              alt="Portrait illustration of Alaa, software engineer"
+              fill
+              sizes="(min-width: 768px) 28rem, 20rem"
+              className="object-cover object-top"
+              priority
+            />
+          </div>
         </div>
       </div>
     </section>
