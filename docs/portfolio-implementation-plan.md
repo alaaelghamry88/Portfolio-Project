@@ -11,10 +11,9 @@
 |-------|---------------------------|---------------|
 | 1     | Foundation                | ✅ Complete   |
 | 2     | Hero Section              | ✅ Complete   |
-| 3     | Content Sections          | ⏳ Next       |
-| 4     | Navigation & Transitions  | ⏳ Pending    |
-| 5     | Personality & Easter Eggs | ⏳ Pending    |
-| 6     | Polish & Launch           | ⏳ Pending    |
+| 3     | Content Sections          | ✅ Complete   |
+| 4     | Navigation & Transitions  | ✅ Complete   |
+| 5     | Polish & Launch           | ⏳ Pending    |
 
 ---
 
@@ -95,43 +94,53 @@ The hero uses a split asymmetric layout:
 
 ---
 
-## Phase 3 — Content Sections ⏳ Next
+## Phase 3 — Content Sections ✅ Complete
 
-**Goal:** About, Projects, Skills, Contact — all animated, real content.
+**Goal:** About, Experience, Projects, Skills, Contact — all animated, real content.
 
-### 3.1 Data Layer (first task)
+### 3.1 Data Layer
 
-Before building sections, populate data files:
-
-- [ ] `src/data/projects.ts` — `Project[]` (3–5 entries minimum)
-- [ ] `src/data/skills.ts` — `Skill[]` grouped by category
-- [ ] `src/data/personal.ts` — Bio text, social links, travel coordinates, /now data
+- [x] `src/data/projects.ts` — `Project[]` (3–5 entries minimum)
+- [x] `src/data/skills.ts` — `Skill[]` grouped by category
+- [x] `src/data/personal.ts` — Bio text, social links, travel coordinates, /now data
 
 ### 3.2 Shared Components
 
-- [ ] **SectionHeading.tsx** — Props: `kicker` (e.g. "02 · The Origin"), `title`. Kicker: mono, terracotta, uppercase, `tracking-widest`. Title: Clash Display `text-section`. GSAP ScrollTrigger entrance.
-- [ ] **TextReveal.tsx** — Reusable scroll-triggered line-by-line reveal. `ScrollTrigger.batch()`, `y: 30 → 0`, `opacity: 0 → 1`, `0.06s` stagger.
-- [ ] **MagneticButton.tsx** — GSAP `quickTo` x/y on mouse move. Resets on mouse leave.
+- [x] **SectionHeading.tsx** — Props: `kicker` (e.g. "02 · The Origin"), `title`. Kicker: mono, terracotta, uppercase, `tracking-widest`. Title: Clash Display `text-section`. GSAP ScrollTrigger entrance.
+- [x] **TextReveal.tsx** — Reusable scroll-triggered line-by-line reveal. `ScrollTrigger.batch()`, `y: 30 → 0`, `opacity: 0 → 1`, `0.06s` stagger.
+- [x] **MagneticButton.tsx** — GSAP `quickTo` x/y on mouse move. Resets on mouse leave.
 
 ### 3.3 About Section — "02 · The Origin"
 
 **Layout:** Two-column desktop (illustration left, text right). Single column mobile.
 
-- [ ] **Avatar.tsx** — `variant: "default" | "coding" | "meditating" | "waving" | "traveling"`. SVG/PNG from `/public/images/avatar/`.
-- [ ] **ScrollRevealText.tsx** — Line-by-line text reveal component.
-- [ ] **AboutSection.tsx** — Full section assembly.
+- [x] **Avatar.tsx** — `variant: "default" | "coding" | "meditating" | "waving" | "traveling"`. SVG/PNG from `/public/images/avatar/`.
+- [x] **ScrollRevealText.tsx** — Line-by-line text reveal component.
+- [x] **AboutSection.tsx** — Full section assembly.
 
 **Animations:**
 - Avatar: `x: -60, opacity: 0` → rest, ScrollTrigger
 - Text lines: `ScrollTrigger.batch()`, staggered `0.06s`
 - Key words: terracotta color applied after line reveal + `scale` pulse
 
-### 3.4 Projects Section — "03 · The Work"
+### 3.4 Experience Section — "03 · The Journey"
+
+**Layout:** Timeline-style vertical list on desktop. Single column mobile.
+
+- [x] `src/data/experience.ts` — `Experience[]` (roles, companies, dates, descriptions)
+- [x] **ExperienceSection.tsx** — Full section assembly with scroll-triggered timeline.
+- [x] **ExperienceCard.tsx** — Role title, company, date range, description bullets. Hover: border → terracotta.
+
+**Animations:**
+- Timeline line draws down on scroll (GSAP `scaleY: 0 → 1`, ScrollTrigger scrub)
+- Cards: `x: -40, opacity: 0` → rest, staggered `0.08s` per card
+
+### 3.5 Projects Section — "04 · The Work"
 
 **Layout:** Pinned horizontal scroll (GSAP `ScrollTrigger.pin`). Full viewport height.
 
-- [ ] **ProjectsSection.tsx** — Pin + horizontal scroll, progress-mapped x position.
-- [ ] **ProjectCard.tsx** — `clipPath` reveal, video/screenshot, title, tagline, badges, case study link.
+- [x] **ProjectsSection.tsx** — Pin + horizontal scroll, progress-mapped x position.
+- [x] **ProjectCard.tsx** — `clipPath` reveal, video/screenshot, title, tagline, badges, case study link.
 
 **Mobile:** Convert to vertical card stack.
 
@@ -149,55 +158,43 @@ ScrollTrigger.create({
 });
 ```
 
-### 3.5 Project Case Study Pages — `/projects/[slug]`
+### 3.6 Project Case Study Pages — `/projects/[slug]`
 
 **Theme:** Light palette (Paper background). Deliberate contrast with dark main site.
 
-- [ ] `app/projects/[slug]/page.tsx` — page with light theme class
-- [ ] **ProjectDetail.tsx** — editorial layout, text max-width 720px, full-bleed media
-- [ ] Transition: card scales up → color morphs dark → light → new page fades in
+- [x] `app/projects/[slug]/page.tsx` — page with light theme class
+- [x] **ProjectDetail.tsx** — editorial layout, text max-width 720px, full-bleed media
+- [x] Transition: card scales up → color morphs dark → light → new page fades in
 
-### 3.6 Skills Section — "04 · The Practice"
+### 3.7 Skills Section — "05 · The Practice"
 
 **Layout:** Category-grouped grid. No progress bars.
 
-- [ ] **SkillsSection.tsx**
-- [ ] **SkillCard.tsx** — icon, name, category badge (green/blue/amber). Hover: `y:-4px`, border → terracotta.
+- [x] **SkillsSection.tsx**
+- [x] **SkillCard.tsx** — icon, name, category badge (green/blue/amber). Hover: `y:-4px`, border → terracotta.
 
 **Animations:** Cards stagger in on scroll in grid pattern (not linear).
 
-### 3.7 Contact Section — "05 · The Next Step"
+### 3.8 Contact Section — "06 · The Next Step"
 
 **Layout:** Split desktop — invitation text + meditating avatar (left), form (right).
 
-- [ ] **ContactSection.tsx**
-- [ ] **ContactForm.tsx** — react-hook-form + zod. Fields: Name, Email, Message. Submit: terracotta magnetic button. Success: form out → waving avatar + thank you message.
-- [ ] `app/api/contact/route.ts` — Resend or similar email service.
+- [x] **ContactSection.tsx**
+- [x] **ContactForm.tsx** — react-hook-form + zod. Fields: Name, Email, Message. Submit: terracotta magnetic button. Success: form out → waving avatar + thank you message.
+- [x] `app/api/contact/route.ts` — Resend or similar email service.
 
 ---
 
-## Phase 4 — Navigation & Transitions ⏳ Pending
+## Phase 4 — Navigation & Transitions ✅ Complete
 
-- [ ] **Navbar (full)** — scroll-aware bg (`transparent` → `rgba(26,30,36,0.8)` + blur), active section terracotta underline (`quickTo`), mobile hamburger → full-screen overlay with GSAP stagger
-- [ ] **ScrollProgress.tsx** — terracotta 1px progress bar at viewport top
-- [ ] **PageTransition.tsx** — GSAP timeline: dark → light color morph on case study navigation
-- [ ] **Footer (full)** — social links, travel coordinates (hover tooltip), meditating avatar, copyright
-
----
-
-## Phase 5 — Personality & Easter Eggs ⏳ Pending
-
-- [ ] **CustomCursor.tsx** — dot + trailing circle, `quickTo` x/y. Touch devices: hidden. Variants: default, hover (1.5x), click (0.8x), text.
-- [ ] **Konami code** (`useKonamiCode.ts`) → `unlockZenMode()` — light palette, 50% animation speed, sonner toast "You found the quiet."
-- [ ] **7-click avatar easter egg** — Footer avatar click counter → full-screen overlay (GSAP slide-up)
-- [ ] **Console message** — Workshop metaphor in terracotta + playlist link
-- [ ] **Travel coordinates** — Monospace muted in section margins, hover GSAP tooltip
-- [ ] **`/now` page** — light palette, personal living updates
-- [ ] **`/404` page** — coding avatar, wit
+- [x] **Navbar (full)** — scroll-aware bg (`transparent` → `rgba(26,30,36,0.8)` + blur), active section terracotta underline (`quickTo`), mobile hamburger → full-screen overlay with GSAP stagger
+- [x] **ScrollProgress.tsx** — terracotta 1px progress bar at viewport top
+- [x] **PageTransition.tsx** — GSAP timeline: dark → light color morph on case study navigation
+- [x] **Footer (full)** — social links, travel coordinates (hover tooltip), meditating avatar, copyright
 
 ---
 
-## Phase 6 — Polish & Launch ⏳ Pending
+## Phase 5 — Polish & Launch ⏳ Pending
 
 ### Performance Targets
 
@@ -250,10 +247,11 @@ ScrollTrigger.create({
 
 ## Section Summary
 
-| # | Section   | Kicker             | 3D / Visual              | Status     |
-|---|-----------|--------------------|--------------------------|------------|
-| 01 | Hero     | 01 · The Arrival   | Spline + R3F icosahedron | ✅ Done    |
-| 02 | About    | 02 · The Origin    | Illustrated avatar       | ⏳ Phase 3 |
-| 03 | Projects | 03 · The Work      | Video previews           | ⏳ Phase 3 |
-| 04 | Skills   | 04 · The Practice  | —                        | ⏳ Phase 3 |
-| 05 | Contact  | 05 · The Next Step | Meditating avatar        | ⏳ Phase 3 |
+| # | Section    | Kicker              | 3D / Visual              | Status     |
+|---|------------|---------------------|--------------------------|------------|
+| 01 | Hero      | 01 · The Arrival    | Spline + R3F icosahedron | ✅ Done    |
+| 02 | About     | 02 · The Origin     | Illustrated avatar       | ✅ Done    |
+| 03 | Experience | 03 · The Journey   | Timeline illustration    | ✅ Done    |
+| 04 | Projects  | 04 · The Work       | Video previews           | ✅ Done    |
+| 05 | Skills    | 05 · The Practice   | —                        | ✅ Done    |
+| 06 | Contact   | 06 · The Next Step  | Meditating avatar        | ✅ Done    |
