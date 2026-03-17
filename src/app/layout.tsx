@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { SectionThread } from "@/components/layout/SectionThread";
+import { PreloaderWrapper } from "@/components/layout/PreloaderWrapper";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({
      */
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="antialiased">
+        <PreloaderWrapper />
         <ScrollProgress />
         <CustomCursor />
         {/* Accessibility: skip to main content */}

@@ -58,6 +58,7 @@ export function HeroSection() {
   const dispatch = useAppDispatch();
 
   const [showSpline, setShowSpline] = useState(false);
+  const [preloaderDone, setPreloaderDone] = useState(false);
 
   // Dispatch "hero" active section so navbar clears when scrolling back to top
   useEffect(() => {
@@ -70,6 +71,23 @@ export function HeroSection() {
     observer.observe(el);
     return () => observer.disconnect();
   }, [dispatch]);
+
+  // Wait for preloader to signal completion before running hero entrance
+  useEffect(() => {
+    // In dev the preloader always plays; in production skip-check via sessionStorage
+    const alreadyLoaded =
+      process.env.NODE_ENV !== "development" &&
+      !!sessionStorage.getItem("journal-loaded");
+
+    if (alreadyLoaded) {
+      setPreloaderDone(true);
+      return;
+    }
+
+    const handler = () => setPreloaderDone(true);
+    window.addEventListener("preloader:done", handler, { once: true });
+    return () => window.removeEventListener("preloader:done", handler);
+  }, []);
 
   // Defer heavy Spline mount until after first paint / intro
   useEffect(() => {
@@ -89,39 +107,33 @@ export function HeroSection() {
 
   useGSAP(
     () => {
-      if (prefersReduced) return;
-
       const shaderEl = shaderRef.current;
       const contentEl = contentRef.current;
       const heroEl = heroRef.current;
 
       if (!shaderEl || !contentEl || !heroEl) return;
 
-      // Shader fades in on load (shorter + GPU hint)
-      gsap.fromTo(
-        shaderEl,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: 1.0,
-          ease: "power2.out",
-        },
-      );
+      // Wait until preloader signals done — CSS opacity:0 keeps them hidden
+      if (!preloaderDone) return;
 
-      // Content entrance — slight upward drift
-      gsap.fromTo(
-        contentEl,
-        { opacity: 0, y: 24 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          delay: 0.1,
-        },
-      );
+      if (prefersReduced) {
+        gsap.set(shaderEl,  { opacity: 1 });
+        gsap.set(contentEl, { opacity: 1, y: 0 });
+      } else {
+        // Shader fades in as the curtain rises
+        gsap.fromTo(shaderEl,
+          { opacity: 0 },
+          { opacity: 1, duration: 1.0, ease: "power2.out" },
+        );
 
-      // Parallax on scroll
+        // Content drifts up into place
+        gsap.fromTo(contentEl,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", delay: 0.15 },
+        );
+      }
+
+      // Parallax on scroll (always, regardless of preloader)
       gsap.fromTo(
         contentEl,
         { y: 0, opacity: 1 },
@@ -141,7 +153,7 @@ export function HeroSection() {
         },
       );
     },
-    { scope: heroRef, dependencies: [prefersReduced] },
+    { scope: heroRef, dependencies: [prefersReduced, preloaderDone] },
   );
 
   return (
@@ -152,7 +164,7 @@ export function HeroSection() {
       aria-label="Hero — The Arrival"
     >
       {/* WebGL noise background — full bleed (sits over global grain/vignettes) */}
-      <div ref={shaderRef} className="absolute inset-0 z-0">
+      <div ref={shaderRef} className="absolute inset-0 z-0" style={{ opacity: 0 }}>
         <ShaderBackground scrollProgressRef={scrollProgressRef} />
       </div>
 
@@ -167,10 +179,11 @@ export function HeroSection() {
       <div
         ref={contentRef}
         className="absolute inset-0 z-10 flex items-center"
+        style={{ opacity: 0 }}
       >
         {/* Left — copy (slightly wider than scene) */}
         <div className="basis-[56%] px-8 md:px-16 lg:px-24 flex flex-col justify-center gap-6">
-          <HeroText />
+          <HeroText ready={preloaderDone} />
         </div>
 
         {/* Right — Spline 3D scene, full height */}

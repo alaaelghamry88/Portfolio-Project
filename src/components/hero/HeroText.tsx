@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 interface Props {
   /** Called when the text entrance animation completes */
   onEntranceComplete?: () => void;
+  /** Must be true before the entrance animation runs (waits for preloader) */
+  ready?: boolean;
 }
 
 /**
@@ -23,7 +25,7 @@ interface Props {
  * Each title line is a `.title-line` span so GSAP splits them
  * individually without destroying the terracotta color on "Portfolio".
  */
-export function HeroText({ onEntranceComplete }: Props) {
+export function HeroText({ onEntranceComplete, ready = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const kickerRef   = useRef<HTMLParagraphElement>(null);
   const titleRef    = useRef<HTMLHeadingElement>(null);
@@ -39,6 +41,9 @@ export function HeroText({ onEntranceComplete }: Props) {
       const subtitle = subtitleRef.current;
       const cta      = ctaRef.current;
       if (!kicker || !title || !subtitle || !cta) return;
+
+      // Wait for preloader to finish before running entrance
+      if (!ready) return;
 
       if (prefersReduced) {
         gsap.set([kicker, subtitle, cta], { opacity: 1 });
@@ -99,7 +104,7 @@ export function HeroText({ onEntranceComplete }: Props) {
         onEntranceComplete?.();
       });
     },
-    { scope: containerRef, dependencies: [prefersReduced] },
+    { scope: containerRef, dependencies: [prefersReduced, ready] },
   );
 
   return (
