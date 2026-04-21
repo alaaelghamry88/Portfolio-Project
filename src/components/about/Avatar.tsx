@@ -21,9 +21,9 @@ export function Avatar() {
       if (prefersReduced) return;
       gsap.fromTo(
         containerRef.current,
-        { x: -60, opacity: 0 },
+        { y: 32, opacity: 0 },
         {
-          x: 0,
+          y: 0,
           opacity: 1,
           duration: 0.9,
           ease: "power3.out",

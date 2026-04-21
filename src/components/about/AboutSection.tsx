@@ -1,18 +1,60 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type RefObject, useEffect, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAppDispatch } from "@/store/hooks";
 import { setActiveSection } from "@/store/slices/navigationSlice";
-import { personal } from "@/data/personal";
 import { Avatar } from "./Avatar";
 import { ScrollRevealText } from "./ScrollRevealText";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { TextReveal } from "@/components/shared/TextReveal";
-import { Briefcase, GraduationCap, FolderKanban } from "lucide-react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// ── Inline highlight phrase ───────────────────────────────────────────────────
+// Renders children with an absolutely-positioned terracotta bar behind them.
+// The bar starts scaleX:0 and is swept to scaleX:1 by the parent's GSAP tween.
+
+function StatHighlight({
+  children,
+  barRef,
+}: {
+  children: React.ReactNode;
+  barRef: RefObject<HTMLSpanElement | null>;
+}) {
+  return (
+    <span className="relative inline-block align-baseline">
+      <span
+        ref={barRef}
+        aria-hidden="true"
+        className="absolute rounded-[3px] pointer-events-none"
+        style={{
+          inset: "-2px -5px",
+          background: "rgba(200,96,42,0.14)",
+          border:     "1px solid rgba(200,96,42,0.28)",
+          transformOrigin: "left center",
+          transform:       "scaleX(0)",
+        }}
+      />
+      <span className="relative font-semibold text-foreground">
+        {children}
+      </span>
+    </span>
+  );
+}
+
+// ── Section ───────────────────────────────────────────────────────────────────
 
 export function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const proseRef   = useRef<HTMLParagraphElement>(null);
+  const bar1Ref    = useRef<HTMLSpanElement>(null);
+  const bar2Ref    = useRef<HTMLSpanElement>(null);
+  const bar3Ref    = useRef<HTMLSpanElement>(null);
   const dispatch   = useAppDispatch();
+  const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -25,78 +67,99 @@ export function AboutSection() {
     return () => observer.disconnect();
   }, [dispatch]);
 
+  useGSAP(
+    () => {
+      const bars = [bar1Ref.current, bar2Ref.current, bar3Ref.current].filter(Boolean);
+      if (!proseRef.current || bars.length === 0) return;
+
+      if (prefersReduced) {
+        gsap.set(bars, { scaleX: 1 });
+        return;
+      }
+
+      gsap.fromTo(
+        bars,
+        { scaleX: 0 },
+        {
+          scaleX:   1,
+          duration: 0.55,
+          ease:     "power3.out",
+          stagger:  0.22,
+          scrollTrigger: {
+            trigger: proseRef.current,
+            start:   "top 88%",
+            once:    true,
+          },
+        },
+      );
+    },
+    { scope: sectionRef, dependencies: [prefersReduced] },
+  );
+
   return (
     <section
       ref={sectionRef}
       id="about"
-      className="container-site py-24 md:py-32"
+      className="container-site pt-24 md:pt-32"
       aria-label="About — The Origin"
     >
-      <div className="grid md:grid-cols-[2fr_3fr] gap-12 md:gap-20 items-center">
-        <div className="flex justify-center md:justify-start">
-          <Avatar />
-        </div>
+      {/* ── Upper: heading + bio (left) | avatar (right) ──────────── */}
+      <div className="grid md:grid-cols-[3fr_2fr] gap-12 md:gap-16 items-start">
         <div className="flex flex-col gap-8">
           <SectionHeading
             kicker="02 · The Origin"
             title={"The Person\nBehind the Code"}
           />
-          <ScrollRevealText className="flex flex-col gap-4">
-            <p className="font-body text-muted-foreground leading-relaxed">
+          <ScrollRevealText className="flex flex-col gap-5">
+            <p className="font-body text-lg text-muted-foreground leading-relaxed">
               I&apos;m a{" "}
-              <span data-highlight className="font-medium text-foreground">
+              <span data-highlight className="font-semibold text-foreground">
                 frontend developer
               </span>{" "}
               who cares deeply about craft, motion, and the details that make an
               interface feel alive. I build with React and Next.js, animate with
-              GSAP and Framer Motion, and treat every project as an opportunity
-              to push what&apos;s possible on the web.
+              GSAP, and treat every project as an opportunity to push what&apos;s
+              possible on the web.
             </p>
-            <p className="font-body text-muted-foreground leading-relaxed">
-              {personal.bio}
+            <p className="font-body text-base text-muted-foreground leading-relaxed">
+              Currently leading frontend at a product studio — driving AI-assisted
+              workflows, design system architecture, and mentoring the next
+              generation of engineers.
             </p>
           </ScrollRevealText>
-          {/* Info cards */}
-          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { Icon: Briefcase,     title: "Experience", detail: "+3 years Building" },
-              { Icon: GraduationCap, title: "Education",  detail: "B.Sc. in Communication Engineering" },
-              { Icon: FolderKanban,  title: "Projects",   detail: "20+ successfully shipped" },
-            ].map(({ Icon, title, detail }) => (
-              <li
-                key={title}
-                className="
-                  flex flex-col gap-3 px-4 py-4 rounded-xl cursor-pointer
-                  border border-border
-                  transition-all duration-300
-                  hover:scale-105 hover:border-terracotta hover:bg-card hover:shadow-lg hover:shadow-terracotta/10
-                "
-              >
-                <Icon size={24} className="text-terracotta mt-1" />
-                <h3 className="font-display font-semibold text-foreground">{title}</h3>
-                <p className="font-body text-sm text-muted-foreground">{detail}</p>
-              </li>
-            ))}
-          </ul>
+        </div>
 
-          {/* Hobbies */}
-          <div>
-            <p className="font-body text-sm italic text-muted-foreground mb-3">
-              Outside of coding, you&apos;ll often find me:
-            </p>
-            <ul className="flex flex-wrap gap-2">
-              {["✈️ Traveling", "🧘 Doing Yoga", "🐴 Horse Riding"].map((chip) => (
-                <li
-                  key={chip}
-                  className="px-3 py-1 rounded-full border border-border font-body text-sm text-muted-foreground"
-                >
-                  {chip}
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Avatar — desktop right column */}
+        <div className="hidden md:flex justify-end">
+          <Avatar />
         </div>
       </div>
+
+      {/* Avatar — mobile, stacked below bio */}
+      <div className="mt-10 flex justify-center md:hidden">
+        <div className="max-w-[260px] w-full">
+          <Avatar />
+        </div>
+      </div>
+
+      {/* ── Prose stats — marker sweep on scroll entry ────────────── */}
+      <p
+        ref={proseRef}
+        className="font-body text-base md:text-lg text-muted-foreground leading-relaxed mt-12 md:mt-16 max-w-2xl"
+      >
+        Built on{" "}
+        <StatHighlight barRef={bar1Ref}>three years of craft</StatHighlight>
+        {", "}
+        <StatHighlight barRef={bar2Ref}>twenty-plus projects shipped</StatHighlight>
+        {", and a "}
+        <StatHighlight barRef={bar3Ref}>B.Sc. in Communication Engineering</StatHighlight>
+        {" — every line of code carries intent."}
+      </p>
+
+      {/* ── Personal footnote ─────────────────────────────────────── */}
+      <p className="font-body text-sm italic text-muted-foreground/50 mt-5">
+        Outside of code — traveling somewhere new, doing yoga, or on a horse.
+      </p>
     </section>
   );
 }
