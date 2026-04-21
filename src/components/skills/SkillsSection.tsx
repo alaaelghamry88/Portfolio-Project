@@ -72,7 +72,7 @@ export function SkillsSection() {
     <section
       ref={sectionRef}
       id="skills"
-      className="container-site py-24 md:py-32"
+      className="container-site pt-24 md:pt-32"
       aria-label="Skills — The Practice"
       style={{ opacity: prefersReduced ? 1 : 0 }}
     >

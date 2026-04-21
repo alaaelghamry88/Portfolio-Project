@@ -96,7 +96,7 @@ export function ExperienceSection() {
     <section
       ref={sectionRef}
       id="experience"
-      className="container-site py-24 md:py-32"
+      className="container-site pt-24 md:pt-32"
       aria-label="Experience — The Journey"
     >
       <SectionHeading
