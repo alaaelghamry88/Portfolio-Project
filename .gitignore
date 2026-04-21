@@ -3,6 +3,9 @@
 # Superpowers brainstorming sessions
 .superpowers/
 
+# Impeccable design context (local, not committed)
+.impeccable.md
+
 # Git worktrees
 .worktrees/
 

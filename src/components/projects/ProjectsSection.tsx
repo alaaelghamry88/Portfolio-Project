@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,28 +10,20 @@ import { setProjects } from "@/store/slices/projectsSlice";
 import { setActiveSection } from "@/store/slices/navigationSlice";
 import { projects } from "@/data/projects";
 import { ProjectCard } from "./ProjectCard";
+import { ProjectIndexRow } from "./ProjectIndexRow";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { MagneticButton } from "@/components/shared/MagneticButton";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const GAP = 32;
-const STACK_Y   = [28, 14, 0]   as const; // card 0 deepest, card 2 on top
-const STACK_ROT = [-5,  2, -2]  as const;
-const STACK_Z   = [ 3,  2,  1]  as const; // card 0 (featured) on top of pile
-
 export function ProjectsSection() {
-  const sectionRef   = useRef<HTMLElement>(null);
-  const pinnedRef    = useRef<HTMLDivElement>(null);
-  const cardsAreaRef = useRef<HTMLDivElement>(null);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const featuredRef = useRef<HTMLDivElement>(null);
+  const indexRef    = useRef<HTMLDivElement>(null);
 
-  const isMobile      = useMediaQuery("(max-width: 767px)");
   const prefersReduced = usePrefersReducedMotion();
-  const dispatch      = useAppDispatch();
+  const dispatch       = useAppDispatch();
 
   useEffect(() => {
     dispatch(setProjects(projects));
@@ -49,161 +42,121 @@ export function ProjectsSection() {
 
   useGSAP(
     () => {
-      if (isMobile || prefersReduced) return;
+      const featuredEl = featuredRef.current;
+      const indexEl    = indexRef.current;
+      if (!featuredEl) return;
 
-      const area      = cardsAreaRef.current;
-      const pinTarget = pinnedRef.current;
-      if (!area || !pinTarget) return;
+      const rows = indexEl
+        ? gsap.utils.toArray<HTMLElement>("[data-index-row]", indexEl)
+        : [];
 
-      let st: ScrollTrigger | undefined;
+      if (prefersReduced) {
+        gsap.set(featuredEl, { opacity: 1, y: 0 });
+        if (rows.length) gsap.set(rows, { opacity: 1, y: 0 });
+        return;
+      }
 
-      const setup = () => {
-        st?.kill();
-        gsap.set(area.querySelectorAll("[data-card]"), { clearProps: "all" });
+      gsap.fromTo(
+        featuredEl,
+        { opacity: 0, y: 32 },
+        {
+          opacity:  1,
+          y:        0,
+          duration: 0.9,
+          ease:     "power3.out",
+          scrollTrigger: { trigger: featuredEl, start: "top 82%", once: true },
+        },
+      );
 
-        const cards = Array.from(area.querySelectorAll<HTMLElement>("[data-card]"));
-        if (cards.length === 0) return;
-
-        const N        = cards.length;
-        const areaW    = area.offsetWidth;
-        const cardW    = Math.floor((areaW - (N - 1) * GAP) / N);
-        const cardH    = Math.round(cardW * 1.25);
-        const stackX   = areaW / 2 - cardW / 2;
-
-        gsap.set(area, { height: cardH + STACK_Y[0] });
-
-        cards.forEach((card, i) => {
-          gsap.set(card, {
-            position:        "absolute",
-            top:             0,
-            width:           cardW,
-            height:          cardH,
-            x:               stackX,
-            y:               STACK_Y[i] ?? 0,
-            rotation:        STACK_ROT[i] ?? 0,
-            zIndex:          STACK_Z[i] ?? 1,
-            opacity:         0,
-            transformOrigin: "center center",
-          });
-        });
-
-        const totalW    = N * cardW + (N - 1) * GAP;
-        const fanStartX = (areaW - totalW) / 2;
-        const fanX      = cards.map((_, i) => fanStartX + i * (cardW + GAP));
-
-        // Step 1 — entrance: cards slide up into the stacked position (no pin).
-        // Fires once when the section scrolls into view (~75% from top).
-        ScrollTrigger.create({
-          trigger: pinTarget,
-          start:   "top 75%",
-          once:    true,
-          onEnter: () => {
-            gsap.fromTo(
-              cards,
-              { opacity: 0, y: 50 },
-              {
-                opacity:  1,
-                y:        (i) => STACK_Y[i] ?? 0,
-                duration: 0.6,
-                stagger:  0.08,
-                ease:     "power3.out",
-              },
-            );
+      rows.forEach((row, i) => {
+        gsap.fromTo(
+          row,
+          { opacity: 0, y: 24 },
+          {
+            opacity:  1,
+            y:        0,
+            duration: 0.7,
+            delay:    i * 0.1,
+            ease:     "power3.out",
+            scrollTrigger: { trigger: row, start: "top 88%", once: true },
           },
-        });
-
-        // Step 2 — fan-out: scrub timeline drives cards to horizontal row.
-        // Pin only engages when the section reaches the top of the viewport
-        // (i.e. the user has already seen the stack).
-        const tl = gsap.timeline({ paused: true });
-
-        cards.forEach((card, i) => {
-          tl.to(
-            card,
-            { x: fanX[i], y: 0, rotation: 0, zIndex: 1, duration: 1, ease: "power3.inOut" },
-            0,
-          );
-        });
-
-        st = ScrollTrigger.create({
-          trigger:             pinTarget,
-          start:               "top top",
-          end:                 "+=700",
-          pin:                 true,
-          pinSpacing:          true,
-          scrub:               1.2,
-          animation:           tl,
-          invalidateOnRefresh: true,
-          anticipatePin:       1,
-          refreshPriority:     1,   // refresh before downstream sections so pin spacer is in place
-          onToggle: (self) => {
-            area.dataset.animating = self.isActive ? "true" : "";
-          },
-        });
-
-        ScrollTrigger.refresh();
-      };
-
-      const ro = new ResizeObserver(setup);
-      ro.observe(area);
-
-      const id = setTimeout(setup, 0);
-
-      return () => {
-        clearTimeout(id);
-        st?.kill();
-        ro.disconnect();
-      };
+        );
+      });
     },
-    { scope: sectionRef, dependencies: [isMobile, prefersReduced] },
+    { scope: sectionRef, dependencies: [prefersReduced] },
   );
+
+  const featured = projects.find((p) => p.featured);
+  const rest     = projects.filter((p) => !p.featured);
 
   return (
     <section
       ref={sectionRef}
       id="projects"
-      className="container-site"
+      className="container-site pt-24 md:pt-32 pb-24 md:pb-32"
       aria-label="Projects — The Work"
     >
-      <div ref={pinnedRef} className="pt-24 md:pt-32 pb-16">
-        {/* Heading row */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8 mb-6">
-          <SectionHeading kicker="04 · The Work" title={"Selected\nProjects"} />
-          <MagneticButton>
-            <Link
-              href="#contact"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-terracotta/40 text-terracotta font-body font-medium text-sm rounded-full transition-colors duration-200 hover:border-terracotta hover:bg-terracotta/10 whitespace-nowrap"
-            >
-              Get in touch →
-            </Link>
-          </MagneticButton>
+      {/* Heading row */}
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8 mb-8 md:mb-12">
+        <SectionHeading kicker="04 · The Work" title={"Selected\nProjects"} />
+        <MagneticButton>
+          <Link
+            href="#contact"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-terracotta/40 text-terracotta font-body font-medium text-sm rounded-full transition-colors duration-200 hover:border-terracotta hover:bg-terracotta/10 whitespace-nowrap"
+          >
+            Get in touch →
+          </Link>
+        </MagneticButton>
+      </div>
+
+      {/* Sub-copy */}
+      <p className="font-body text-muted-foreground leading-relaxed max-w-xl mb-12 md:mb-20">
+        A handful of projects that pushed my skills forward — from design
+        systems to real-time dashboards to creative experiments.
+      </p>
+
+      {/* Featured card */}
+      {featured && (
+        <div ref={featuredRef} className="opacity-0 mb-16 md:mb-24">
+          <ProjectCard project={featured} />
         </div>
+      )}
 
-        {/* Sub-copy */}
-        <p className="font-body text-muted-foreground leading-relaxed max-w-xl mb-12 md:mb-16">
-          A handful of projects that pushed my skills forward — from design
-          systems to real-time dashboards to creative experiments.
-        </p>
+      {/* Index — "Also in the work" */}
+      {rest.length > 0 && (
+        <div>
+          <div className="flex items-center gap-4 mb-2 md:mb-4">
+            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
+              Also · in · the · work
+            </span>
+            <span className="flex-1 h-px bg-border" aria-hidden="true" />
+            <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+              {String(rest.length).padStart(2, "0")} entries
+            </span>
+          </div>
 
-        {/* Cards area */}
-        <div
-          ref={cardsAreaRef}
-          className={cn("relative", isMobile && "flex flex-col gap-6")}
+          <div ref={indexRef} className="flex flex-col">
+            {rest.map((project, i) => (
+              <ProjectIndexRow
+                key={project.slug}
+                project={project}
+                index={i + 2}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Archive note */}
+      <div className="mt-14 md:mt-20 flex items-center justify-center">
+        <Link
+          href="#contact"
+          className="group inline-flex items-center gap-4 font-mono text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-terracotta transition-colors duration-300"
         >
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.slug}
-              project={project}
-              data-card="true"
-              className={isMobile ? "w-full" : undefined}
-              style={
-                isMobile
-                  ? { minHeight: project.featured ? "520px" : "280px" }
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+          <span className="w-10 h-px bg-current opacity-40 transition-[width,opacity] duration-500 group-hover:w-16 group-hover:opacity-100" aria-hidden="true" />
+          want to see more? ask.
+          <span className="w-10 h-px bg-current opacity-40 transition-[width,opacity] duration-500 group-hover:w-16 group-hover:opacity-100" aria-hidden="true" />
+        </Link>
       </div>
     </section>
   );

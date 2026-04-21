@@ -6,17 +6,17 @@ const FOOTER_SOCIALS = [
   {
     name: "Github",
     image: "https://cdn-icons-png.flaticon.com/512/25/25231.png",
-    href: "https://github.com/your-username",
+    href: "https://github.com/alaaelghamry88",
   },
   {
     name: "LinkedIn",
     image: "https://cdn-icons-png.flaticon.com/512/174/174857.png",
-    href: "https://www.linkedin.com/in/your-handle",
+    href: "https://www.linkedin.com/in/alaa-elghamry7/",
   },
   {
     name: "Gmail",
     image: "https://cdn-icons-png.flaticon.com/512/5968/5968534.png",
-    href: "mailto:youremail@gmail.com",
+    href: "alaa.elghamry88@gmail.com",
   },
 ] as const satisfies { name: string; image: string; href: string }[];
 

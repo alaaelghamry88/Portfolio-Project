@@ -325,9 +325,4 @@
     margin-inline: auto;
     padding-inline: 1.5rem;
   }
-
-  /* Suppress CSS hover transitions on cards while GSAP scrub is active */
-  [data-animating] [data-card] {
-    transition: none !important;
-  }
 }

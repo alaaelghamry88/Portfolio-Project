@@ -6,7 +6,7 @@
 
 ## Concept
 
-The portfolio reads like a beautifully typeset personal journal or design monograph — warm, intentional, deeply personal — but alive with motion, 3D, and interactivity. The rhythm mirrors a yoga flow: moments of stillness, then controlled bursts of energy.
+The portfolio reads like a beautifully typeset personal journal or design monograph — warm, intentional, deeply personal — but alive with motion, 3D, and interactivity.
 
 ### Design Pillars
 
