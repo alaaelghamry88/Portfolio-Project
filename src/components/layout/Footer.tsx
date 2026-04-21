@@ -16,7 +16,7 @@ const FOOTER_SOCIALS = [
   {
     name: "Gmail",
     image: "https://cdn-icons-png.flaticon.com/512/5968/5968534.png",
-    href: "alaa.elghamry88@gmail.com",
+    href: "mailto:alaa.elghamry88@gmail.com",
   },
 ] as const satisfies { name: string; image: string; href: string }[];
 

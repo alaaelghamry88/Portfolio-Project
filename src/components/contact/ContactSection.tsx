@@ -41,12 +41,6 @@ export function ContactSection() {
               Whether you have a project in mind, want to collaborate, or just
               want to talk craft — I&apos;d love to hear from you.
             </p>
-            <a
-              href={`mailto:${personal.email}`}
-              className="font-mono text-sm text-terracotta hover:underline transition-all duration-200"
-            >
-              {personal.email}
-            </a>
           </TextReveal>
         </div>
         <div>
