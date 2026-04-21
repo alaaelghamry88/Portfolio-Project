@@ -128,14 +128,14 @@ export function Preloader() {
     entrance.to(progressBar, { scaleX: 0.45, duration: 1.1, ease: "power2.out" }, 3.7);
     entrance.to(counter$, {
       val: 45, duration: 1.1, ease: "power2.out",
-      onUpdate() { counter.textContent = `${Math.round(counter$.val)}%`; },
+      onUpdate() { counter!.textContent = `${Math.round(counter$.val)}%`; },
     }, 3.7);
 
     // ── Progress phase 2 — slow crawl (45 → 88%, 2.4 s) — 3D loading ─────
     entrance.to(progressBar, { scaleX: 0.88, duration: 2.4, ease: "sine.inOut" });
     entrance.to(counter$, {
       val: 88, duration: 2.4, ease: "sine.inOut",
-      onUpdate() { counter.textContent = `${Math.round(counter$.val)}%`; },
+      onUpdate() { counter!.textContent = `${Math.round(counter$.val)}%`; },
     }, "<");
 
     // ── Gate: wait for window.load + min time, then fire exit ─────────────
@@ -152,8 +152,8 @@ export function Preloader() {
       gsap.to(progressBar, { scaleX: 1, duration: 0.5, ease: "power2.in" });
       gsap.to(counter$, {
         val: 100, duration: 0.5, ease: "power2.in",
-        onUpdate() { counter.textContent = `${Math.round(counter$.val)}%`; },
-        onComplete() { counter.textContent = "100%"; },
+        onUpdate() { counter!.textContent = `${Math.round(counter$.val)}%`; },
+        onComplete() { counter!.textContent = "100%"; },
       });
 
       // Ring slows to a natural stop as we hit 100%
