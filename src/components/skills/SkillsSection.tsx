@@ -23,8 +23,8 @@ export function SkillsSection() {
   const dispatch     = useAppDispatch();
 
   const prefersReduced = usePrefersReducedMotion();
-  const isMobile       = useMediaQuery("(max-width: 479px)");
-  const showOrbit      = !prefersReduced && !isMobile;
+  const isNarrow       = useMediaQuery("(max-width: 1023px)");
+  const showOrbit      = !prefersReduced && !isNarrow;
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -76,7 +76,7 @@ export function SkillsSection() {
       aria-label="Skills — The Practice"
       style={{ opacity: prefersReduced ? 1 : 0 }}
     >
-      <div className="grid md:grid-cols-[9fr_11fr] gap-12 md:gap-16 items-center">
+      <div className="grid lg:grid-cols-[9fr_11fr] gap-12 lg:gap-16 items-center">
         <div className="flex flex-col gap-8">
           <SectionHeading
             kicker="05 · The Practice"

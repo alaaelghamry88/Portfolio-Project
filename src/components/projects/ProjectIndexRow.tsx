@@ -2,10 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { forwardRef, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/types/project";
 import { tagColor } from "@/data/projects";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { cn } from "@/lib/utils";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Props {
   project: Project;
@@ -13,21 +20,59 @@ interface Props {
 }
 
 export function ProjectIndexRow({ project, index }: Props) {
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const rowRef         = useRef<HTMLAnchorElement>(null);
+  const isMobile       = useMediaQuery("(max-width: 767px)");
+  const prefersReduced = usePrefersReducedMotion();
+
+  // Each row owns its own entrance animation so the swap between
+  // DesktopRow / MobileRow (triggered by useMediaQuery firing after hydration)
+  // doesn't leave the new DOM node stuck at opacity:0.
+  useGSAP(
+    () => {
+      const el = rowRef.current;
+      if (!el) return;
+
+      if (prefersReduced) {
+        gsap.set(el, { opacity: 1, y: 0 });
+        return;
+      }
+
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 88%", once: true },
+        },
+      );
+    },
+    { dependencies: [prefersReduced, isMobile] },
+  );
+
   return isMobile
-    ? <MobileRow project={project} index={index} />
-    : <DesktopRow project={project} index={index} />;
+    ? <MobileRow ref={rowRef} project={project} index={index} />
+    : <DesktopRow ref={rowRef} project={project} index={index} />;
 }
 
-function DesktopRow({ project, index }: Props) {
+// ── Desktop row ───────────────────────────────────────────────────────────────
+
+const DesktopRow = forwardRef<HTMLAnchorElement, Props>(function DesktopRow(
+  { project, index },
+  ref,
+) {
   const number = `/${String(index).padStart(2, "0")}`;
 
   return (
     <Link
+      ref={ref}
       href={`/projects/${project.slug}`}
       data-index-row
       aria-label={`View project: ${project.title}`}
-      className="group relative block opacity-0 border-t border-border last:border-b"
+      className="group relative block border-t border-border last:border-b"
+      style={{ opacity: 0 }}
     >
       {/* Terracotta divider — sweeps in from the left on row-hover */}
       <span
@@ -43,7 +88,7 @@ function DesktopRow({ project, index }: Props) {
 
         {/* Title + tagline — takes remaining space */}
         <div className="flex-1 min-w-0 transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:translate-x-2">
-          <h3 className="font-display font-bold text-foreground text-3xl md:text-4xl lg:text-[3.25rem] leading-[1.02] tracking-[-0.025em] truncate">
+          <h3 className="font-display font-bold text-foreground text-3xl md:text-4xl lg:text-[3.25rem] leading-[1.02] tracking-[-0.025em]">
             {project.title}
           </h3>
           <p className="mt-2 font-body text-sm md:text-[0.95rem] text-muted-foreground line-clamp-1 max-w-xl">
@@ -118,17 +163,24 @@ function DesktopRow({ project, index }: Props) {
       </div>
     </Link>
   );
-}
+});
 
-function MobileRow({ project, index }: Props) {
+// ── Mobile row ────────────────────────────────────────────────────────────────
+
+const MobileRow = forwardRef<HTMLAnchorElement, Props>(function MobileRow(
+  { project, index },
+  ref,
+) {
   const number = `/${String(index).padStart(2, "0")}`;
 
   return (
     <Link
+      ref={ref}
       href={`/projects/${project.slug}`}
       data-index-row
       aria-label={`View project: ${project.title}`}
-      className="group block border-t border-border last:border-b py-6 opacity-0"
+      className="group block border-t border-border last:border-b py-6"
+      style={{ opacity: 0 }}
     >
       <div className="flex items-start gap-4">
         <span className="font-mono text-[10px] tracking-[0.2em] text-terracotta pt-2 shrink-0">
@@ -167,4 +219,4 @@ function MobileRow({ project, index }: Props) {
       </div>
     </Link>
   );
-}
+});

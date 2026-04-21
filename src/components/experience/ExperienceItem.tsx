@@ -107,6 +107,9 @@ export const ExperienceItem = forwardRef<ExperienceItemHandle, Props>(
               {"  ·  "}
               {place}
             </p>
+            <p className="font-mono text-[10px] mt-1.5 text-muted-foreground/55 tracking-wide tabular-nums md:hidden">
+              {dates}
+            </p>
           </div>
 
           {/* Date range + expand indicator — desktop only */}

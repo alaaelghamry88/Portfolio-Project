@@ -24,19 +24,19 @@ export function tagColor(tag: string): string {
 
 export const projects: Project[] = [
   {
-    slug: "luminary-ds",
-    title: "Luminary DS",
-    tagline: "A design system built for scale and craft.",
+    slug: "drift-app",
+    title: "Drift-App",
+    tagline: "A personalized AI intelligence app built for developers.",
     description:
-      "Luminary DS is a fully-documented component library built with React, TypeScript, and Storybook. It enforces design tokens via CSS custom properties and ships with a comprehensive accessibility audit pipeline. Used across three internal products, it cut design-to-code handoff time by 60%.",
-    tags: ["Design Systems", "React", "TypeScript", "Storybook"],
+      "Drift is a personalized AI intelligence layer designed to help developers navigate the fast-moving AI landscape without overwhelm. The app delivers a daily curated digest tailored to each user's stack and current project context, includes a one-click should I learn this? verdict engine powered by real-time web search, and lets users drop any link for instant relevance assessment. Built with Next.js, TypeScript, and Tailwind CSS, with Claude as the AI backbone — emphasizing calm UX, streaming interactions, and generative card components that adapt to content type.",
+    tags: ["Design Systems", "Next.js", "TypeScript", "GSAP", "Creative Coding"],
     year: 2025,
     role: "Lead Frontend Engineer",
-    liveUrl: "https://example.com/luminary",
-    githubUrl: "https://github.com/yourusername/luminary-ds",
+    liveUrl: "https://drift-ai-brown.vercel.app/",
+    githubUrl: "#",
     thumbnail:
-      "https://images.unsplash.com/photo-1573805672213-81b449b17e8a?auto=format&fit=crop&w=1200&q=80",
-    videoPreview: "/videos/projects/luminary-ds-preview.mp4",
+      "/images/projects/drift-app.png",
+    videoPreview: "/videos/projects/drift-app.mp4",
     featured: true,
   },
   {
@@ -59,6 +59,22 @@ export const projects: Project[] = [
     slug: "kinetic-studio",
     title: "Kinetic Studio",
     tagline: "An animated landing page that moves like it means it.",
+    description:
+      "Kinetic Studio is a showcase landing page for a fictional creative agency, built to push the limits of CSS and GSAP. It features a scroll-driven 3D scene, magnetic buttons, SVG path morphing, and a colour-shift hero. Lighthouse score: 97.",
+    tags: ["GSAP", "Three.js", "Next.js", "Creative Coding"],
+    year: 2024,
+    role: "Creative Developer",
+    liveUrl: "https://example.com/kinetic",
+    githubUrl: "https://github.com/yourusername/kinetic-studio",
+    thumbnail:
+      "https://images.unsplash.com/photo-1768141732026-55ea156f5aa9?auto=format&fit=crop&w=1200&q=80",
+    videoPreview: "/videos/projects/kinetic-studio-preview.mp4",
+    featured: false,
+  },
+  {
+    slug: "Drift-Landing",
+    title: "Drift Landing",
+    tagline: "A modern landing page for a SaaS product.",
     description:
       "Kinetic Studio is a showcase landing page for a fictional creative agency, built to push the limits of CSS and GSAP. It features a scroll-driven 3D scene, magnetic buttons, SVG path morphing, and a colour-shift hero. Lighthouse score: 97.",
     tags: ["GSAP", "Three.js", "Next.js", "Creative Coding"],

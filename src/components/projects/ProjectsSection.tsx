@@ -20,7 +20,6 @@ gsap.registerPlugin(ScrollTrigger);
 export function ProjectsSection() {
   const sectionRef  = useRef<HTMLElement>(null);
   const featuredRef = useRef<HTMLDivElement>(null);
-  const indexRef    = useRef<HTMLDivElement>(null);
 
   const prefersReduced = usePrefersReducedMotion();
   const dispatch       = useAppDispatch();
@@ -43,16 +42,10 @@ export function ProjectsSection() {
   useGSAP(
     () => {
       const featuredEl = featuredRef.current;
-      const indexEl    = indexRef.current;
       if (!featuredEl) return;
-
-      const rows = indexEl
-        ? gsap.utils.toArray<HTMLElement>("[data-index-row]", indexEl)
-        : [];
 
       if (prefersReduced) {
         gsap.set(featuredEl, { opacity: 1, y: 0 });
-        if (rows.length) gsap.set(rows, { opacity: 1, y: 0 });
         return;
       }
 
@@ -67,21 +60,6 @@ export function ProjectsSection() {
           scrollTrigger: { trigger: featuredEl, start: "top 82%", once: true },
         },
       );
-
-      rows.forEach((row, i) => {
-        gsap.fromTo(
-          row,
-          { opacity: 0, y: 24 },
-          {
-            opacity:  1,
-            y:        0,
-            duration: 0.7,
-            delay:    i * 0.1,
-            ease:     "power3.out",
-            scrollTrigger: { trigger: row, start: "top 88%", once: true },
-          },
-        );
-      });
     },
     { scope: sectionRef, dependencies: [prefersReduced] },
   );
@@ -93,7 +71,7 @@ export function ProjectsSection() {
     <section
       ref={sectionRef}
       id="projects"
-      className="container-site pt-24 md:pt-32 pb-24 md:pb-32"
+      className="container-site pt-24 md:pt-32"
       aria-label="Projects — The Work"
     >
       {/* Heading row */}
@@ -135,7 +113,7 @@ export function ProjectsSection() {
             </span>
           </div>
 
-          <div ref={indexRef} className="flex flex-col">
+          <div className="flex flex-col">
             {rest.map((project, i) => (
               <ProjectIndexRow
                 key={project.slug}

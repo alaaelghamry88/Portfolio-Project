@@ -148,11 +148,11 @@ export function AboutSection() {
         className="font-body text-base md:text-lg text-muted-foreground leading-relaxed mt-12 md:mt-16 max-w-2xl"
       >
         Built on{" "}
-        <StatHighlight barRef={bar1Ref}>three years of craft</StatHighlight>
+        <StatHighlight barRef={bar1Ref}>Four years of craft</StatHighlight>
         {", "}
         <StatHighlight barRef={bar2Ref}>twenty-plus projects shipped</StatHighlight>
         {", and a "}
-        <StatHighlight barRef={bar3Ref}>B.Sc. in Communication Engineering</StatHighlight>
+        <StatHighlight barRef={bar3Ref}>B.Sc. in Communication and Electronics Engineering</StatHighlight>
         {" — every line of code carries intent."}
       </p>
 
