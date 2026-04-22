@@ -52,7 +52,7 @@ export function Avatar() {
       </div>
       {!imgError && (
         <Image
-          src="/images/avatar/Alaa-Elghamry.JPEG"
+          src="/images/avatar/Alaa-Elghamry.jpeg"
           alt="Alaa Elghamry"
           width={400}
           height={400}
