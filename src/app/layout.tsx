@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { ReduxProvider } from "@/store/provider";
 import { GSAPProvider } from "@/components/layout/GSAPProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
@@ -74,6 +75,7 @@ export default function RootLayout({
             </GSAPProvider>
           </ReduxProvider>
         </div>
+        <Analytics />
       </body>
     </html>
   );
